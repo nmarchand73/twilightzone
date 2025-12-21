@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Twilight Zone - Episode Guide</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Background Shader -->
+    <div class="background-shader" id="backgroundShader"></div>
+
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="title">The Twilight Zone</h1>
+                <p class="subtitle">1959-1964 Original Series</p>
+                <div class="series-info">
+                    <span class="info-badge" id="totalSeasons">5 Seasons</span>
+                    <span class="info-badge" id="totalEpisodes">156 Episodes</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Search and Filter Section -->
+        <div class="controls">
+            <div class="search-container">
+                <input
+                    type="text"
+                    id="searchInput"
+                    class="search-input"
+                    placeholder="Search episodes by title, plot, director, or writer..."
+                    aria-label="Search episodes"
+                >
+            </div>
+
+            <div class="filter-container">
+                <label for="seasonFilter" class="filter-label">Season:</label>
+                <select id="seasonFilter" class="season-select">
+                    <option value="all">All Seasons</option>
+                    <option value="1">Season 1</option>
+                    <option value="2">Season 2</option>
+                    <option value="3">Season 3</option>
+                    <option value="4">Season 4</option>
+                    <option value="5">Season 5</option>
+                </select>
+
+                <label for="directorFilter" class="filter-label">Director:</label>
+                <select id="directorFilter" class="season-select">
+                    <option value="all">All Directors</option>
+                </select>
+
+                <label for="writerFilter" class="filter-label">Writer:</label>
+                <select id="writerFilter" class="season-select">
+                    <option value="all">All Writers</option>
+                </select>
+
+                <button id="sortToggle" class="sort-button" aria-label="Toggle sort order">
+                    Sort: Oldest First
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats Bar -->
+        <div class="stats-bar">
+            <span id="displayCount">Displaying 156 episodes</span>
+        </div>
+
+        <!-- Episodes Grid -->
+        <main class="episodes-grid" id="episodesGrid" role="main">
+            <!-- Episodes will be dynamically inserted here -->
+        </main>
+
+        <!-- Loading State -->
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <p>Loading episodes from The Twilight Zone...</p>
+        </div>
+
+        <!-- No Results State -->
+        <div class="no-results hidden" id="noResults">
+            <p>No episodes found matching your search.</p>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Created by Rod Serling | Data scraped from Wikipedia</p>
+        </footer>
+    </div>
+
+    <!-- Plot Modal -->
+    <div class="plot-modal hidden" id="plotModal">
+        <div class="plot-modal-backdrop"></div>
+        <div class="plot-modal-content">
+            <button class="plot-modal-close" id="plotModalClose" aria-label="Close">×</button>
+            <div class="plot-modal-shader-bg" id="plotModalShader"></div>
+            <div class="plot-modal-inner">
+                <div class="plot-modal-header">
+                    <span class="plot-modal-badge" id="plotModalBadge"></span>
+                    <h2 class="plot-modal-title" id="plotModalTitle"></h2>
+                </div>
+                <div class="plot-modal-body" id="plotModalBody"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Player Modal -->
+    <div class="video-modal hidden" id="videoModal">
+        <div class="video-modal-backdrop"></div>
+        <div class="video-modal-content">
+            <button class="video-modal-close" id="videoModalClose" aria-label="Close">×</button>
+            <div class="video-modal-header">
+                <span class="video-modal-badge" id="videoModalBadge"></span>
+                <h2 class="video-modal-title" id="videoModalTitle"></h2>
+                <p class="video-modal-title-french" id="videoModalTitleFrench"></p>
+            </div>
+            <div class="video-modal-player">
+                <video id="episodeVideoPlayer" preload="metadata">
+                    <source id="episodeVideoSource" src="" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                
+                <!-- Custom Video Controls Overlay -->
+                <div class="video-controls-overlay" id="videoControlsOverlay">
+                    <div class="video-controls-bottom">
+                        <div class="video-controls-left">
+                            <button class="video-control-btn" id="videoPlayPause" aria-label="Play/Pause">
+                                <span class="play-icon">▶</span>
+                                <span class="pause-icon" style="display: none;">⏸</span>
+                            </button>
+                            <div class="video-time">
+                                <span id="videoCurrentTime">0:00</span>
+                                <span class="time-separator">/</span>
+                                <span id="videoDuration">0:00</span>
+                            </div>
+                            <button class="video-control-btn" id="videoVolumeBtn" aria-label="Volume">
+                                <span class="volume-icon">🔊</span>
+                            </button>
+                            <div class="video-volume-container">
+                                <div class="video-volume-slider" id="videoVolumeSlider">
+                                    <div class="video-volume-filled" id="videoVolumeFilled"></div>
+                                    <div class="video-volume-handle" id="videoVolumeHandle"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="video-controls-right">
+                            <button class="video-control-btn" id="videoFullscreen" aria-label="Fullscreen">
+                                <span class="fullscreen-icon">⛶</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="video-controls-top">
+                        <div class="video-progress-container">
+                            <div class="video-progress-bar" id="videoProgressBar">
+                                <div class="video-progress-filled" id="videoProgressFilled"></div>
+                                <div class="video-progress-handle" id="videoProgressHandle"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Three.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- Shader Programs -->
+    <script src="shaders.js"></script>
+
+    <!-- Particle System -->
+    <script src="particles.js"></script>
+
+    <!-- Custom Cursor -->
+    <script src="cursor.js"></script>
+
+    <!-- CRT/TV Effect -->
+    <script src="crt-effect.js"></script>
+
+    <!-- Main Application -->
+    <script src="app.js"></script>
+</body>
+</html>
