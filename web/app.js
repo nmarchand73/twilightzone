@@ -561,14 +561,20 @@ class TwilightZoneApp {
     }
 
     getVideoFilePath(episode) {
-        // Si c'est un épisode Thunderbirds, utiliser le proxy serveur pour contourner CORS
+        // Priorité 1: Utiliser localPath si disponible (fichier téléchargé localement)
+        if (episode.localPath) {
+            // Le localPath est relatif au dossier web, on peut le servir directement
+            return episode.localPath;
+        }
+        
+        // Priorité 2: Si c'est un épisode Thunderbirds avec archiveUrl, utiliser le proxy serveur
         if (episode.series === 'thunderbirds' || episode.archiveUrl) {
             const archiveUrl = episode.archiveUrl || episode.videoUrl;
             // Encoder l'URL pour le proxy
             return `/api/archive/${encodeURIComponent(archiveUrl)}`;
         }
         
-        // Génère le chemin du fichier vidéo basé sur les données de l'épisode
+        // Priorité 3: Génère le chemin du fichier vidéo basé sur les données de l'épisode (Twilight Zone)
         // Utilise la table de correspondance pour trouver le vrai nom de fichier
         const season = String(episode.season_number).padStart(2, '0');
         const episodeNum = String(episode.episode_number).padStart(2, '0');
@@ -1513,12 +1519,51 @@ class TwilightZoneApp {
             });
         }
 
-        // Apply sorting
+        // Apply sorting - use air_date for chronological order
         filtered.sort((a, b) => {
+            // Parse air_date for proper chronological sorting
+            const parseDate = (dateStr) => {
+                if (!dateStr) return new Date(0);
+                
+                // Handle formats like "30 September 1965", "October 1965", "1965"
+                const parts = dateStr.trim().split(' ');
+                if (parts.length >= 3) {
+                    // Full date: "30 September 1965"
+                    const day = parseInt(parts[0]) || 1;
+                    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                                      'July', 'August', 'September', 'October', 'November', 'December'];
+                    const month = monthNames.indexOf(parts[1]) + 1 || 1;
+                    const year = parseInt(parts[2]) || 1965;
+                    return new Date(year, month - 1, day);
+                } else if (parts.length === 2) {
+                    // Month and year: "October 1965"
+                    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                                      'July', 'August', 'September', 'October', 'November', 'December'];
+                    const month = monthNames.indexOf(parts[0]) + 1 || 1;
+                    const year = parseInt(parts[1]) || 1965;
+                    return new Date(year, month - 1, 1);
+                } else {
+                    // Just year: "1965"
+                    const year = parseInt(parts[0]) || 1965;
+                    return new Date(year, 0, 1);
+                }
+            };
+            
+            const dateA = parseDate(a.air_date);
+            const dateB = parseDate(b.air_date);
+            
             if (this.thunderbirdsSortAscending) {
-                return a.episode_number_overall - b.episode_number_overall;
+                // If dates are equal, fall back to episode_number_overall
+                if (dateA.getTime() === dateB.getTime()) {
+                    return a.episode_number_overall - b.episode_number_overall;
+                }
+                return dateA - dateB;
             } else {
-                return b.episode_number_overall - a.episode_number_overall;
+                // If dates are equal, fall back to episode_number_overall
+                if (dateA.getTime() === dateB.getTime()) {
+                    return b.episode_number_overall - a.episode_number_overall;
+                }
+                return dateB - dateA;
             }
         });
 

@@ -137,13 +137,25 @@ def main():
     failed = 0
     skipped = 0
     
-    # Télécharger chaque épisode
-    print(f"\n[DÉBUT] Téléchargement de {total} épisodes...\n")
+    # Filtrer les épisodes à télécharger (ceux sans localPath)
+    episodes_to_download = [ep for ep in episodes if not ep.get('localPath')]
     
-    for i, episode in enumerate(episodes, 1):
+    if not episodes_to_download:
+        print("\n[INFO] Tous les épisodes sont déjà téléchargés!")
+        return
+    
+    print(f"\n[INFO] {len(episodes_to_download)} épisodes à télécharger (sans localPath)")
+    for ep in episodes_to_download:
+        print(f"  - Episode {ep.get('episode_number_overall', '?')}: {ep.get('title_original', 'Unknown')}")
+    
+    # Télécharger chaque épisode
+    total_to_download = len(episodes_to_download)
+    print(f"\n[DÉBUT] Téléchargement de {total_to_download} épisodes...\n")
+    
+    for i, episode in enumerate(episodes_to_download, 1):
         archive_url = episode.get('archiveUrl')
         if not archive_url:
-            print(f"\n[{i}/{total}] [SKIP] Pas d'URL pour l'épisode {episode.get('title_original', 'inconnu')}")
+            print(f"\n[{i}/{total_to_download}] [SKIP] Pas d'URL pour l'épisode {episode.get('title_original', 'inconnu')}")
             skipped += 1
             continue
         
@@ -151,7 +163,7 @@ def main():
         filename = get_filename_from_url(archive_url, episode)
         output_path = OUTPUT_DIR / filename
         
-        print(f"\n[{i}/{total}] ", end='')
+        print(f"\n[{i}/{total_to_download}] ", end='')
         
         # Télécharger
         if download_file(archive_url, output_path, episode):
@@ -160,15 +172,15 @@ def main():
             failed += 1
         
         # Délai entre les téléchargements (sauf pour le dernier)
-        if i < total:
+        if i < total_to_download:
             time.sleep(DOWNLOAD_DELAY)
     
     # Résumé
     print("\n" + "=" * 60)
     print("RÉSUMÉ")
     print("=" * 60)
-    print(f"Total: {total}")
-    print(f"Succès: {success}")
+    print(f"Total épisodes dans JSON: {total}")
+    print(f"Épisodes téléchargés: {success}")
     print(f"Échecs: {failed}")
     print(f"Passés: {skipped}")
     print(f"\nFichiers sauvegardés dans: {OUTPUT_DIR}")
