@@ -1,218 +1,259 @@
-# Twilight Zone French Wikipedia Scraper
+# The Twilight Zone - Episode Viewer
 
-A Python web scraper that extracts all episode data from French Wikipedia's "La Quatrième Dimension" (The Twilight Zone) pages and outputs a structured JSON database.
+Un affichage interactif et surréaliste pour les épisodes de la série classique The Twilight Zone (1959-1964).
 
-## Features
+## ✨ Caractéristiques
 
-- Automatically discovers all season pages on French Wikipedia
-- Extracts episode information including:
-  - Episode numbers and titles (French)
-  - Original titles (English, when available)
-  - Air dates
-  - Plot summaries
-  - Director and writer information
-  - Production codes
-- Respectful scraping with rate limiting (2-second delays between requests)
-- Robust error handling and retry logic
-- Comprehensive logging
-- UTF-8 JSON output
+### 🎨 Design Unique
+- **Esthétique vintage noir** inspirée de l'atmosphère de la série
+- **Shaders Three.js personnalisés** - Chaque épisode a un fond animé UNIQUE avec des shaders WebGL :
+  - 🌀 **Spiral Vortex** - Distorsion temporelle hypnotique
+  - 💚 **Glitch Matrix** - Corruption digitale et pluie de code
+  - 🌌 **Cosmic Nebula** - Nébuleuse cosmique animée
+  - 🌊 **Psychedelic Waves** - Vagues psychédéliques colorées
+  - 🔮 **Fractal Zoom** - Motifs fractals infinis
+  - ⚡ **Plasma Storm** - Tempête de plasma énergétique
+  - 🕳️ **Tunnel Vision** - Vision tunnel immersive
+  - 📺 **Retro TV Static** - Statique TV rétro authentique
+  - 🔷 **Kaleidoscope** - Kaléidoscope symétrique
+  - 💧 **Digital Rain** - Pluie digitale Matrix-style
+  - 🌑 **Void Pulse** - Pulsation du vide cosmique
+  - 🎨 **Chromatic Shift** - Décalage chromatique RGB
+- **Effets CSS aléatoires** - Combinaisons d'effets visuels supplémentaires :
+  - Effets de glitch et distorsion VHS
+  - Lignes de balayage TV vintage
+  - Aberrations chromatiques
+  - Inclinaisons et rotations aléatoires
+  - Teintes de couleur mystérieuses
+  - Animations de pulsation et flottement
+  - Grain de film et bruit statique
+  - Effets d'ombre variés
 
-## Requirements
+### 🔍 Fonctionnalités Interactives
+- **Recherche en temps réel** - Recherchez par titre, intrigue, réalisateur ou scénariste
+- **Filtrage par saison** - Affichez les épisodes d'une saison spécifique
+- **Tri bidirectionnel** - Triez du plus récent au plus ancien ou vice versa
+- **Intrigues extensibles** - Cliquez pour lire l'intrigue complète de chaque épisode
+- **Compteur en direct** - Affiche le nombre d'épisodes correspondant aux filtres
 
-- Python 3.8+
-- See `requirements.txt` for dependencies
+### ♿ Accessibilité
+- Support complet du clavier
+- Labels ARIA pour les lecteurs d'écran
+- Support du mode de mouvement réduit
+- Design responsive mobile-first
+- Indicateurs de focus visibles
 
-## Installation
+## 🚀 Lancement
 
-1. Clone or download this repository
-2. Install dependencies:
-
+### Option 1: Script Batch (Recommandé pour Windows)
 ```bash
-cd F:/DEV/SRC/TWILIGHT_ZONE
-pip install -r requirements.txt
+# Depuis le répertoire web/ :
+cd web
+start-server.bat
 ```
 
-## Usage
-
-Simply run the main script:
-
+### Option 2: Serveur Python personnalisé
 ```bash
-python main.py
+# Depuis le répertoire web/ :
+cd web
+python server.py
 ```
 
-The scraper will:
-1. Discover all available season pages
-2. Extract episode data from each season
-3. Save the results to `output/twilight_zone_episodes.json`
-4. Generate a log file in `output/logs/`
-
-## Output
-
-The scraper generates a JSON file with the following structure:
-
-```json
-{
-  "series_title": "La Quatrième Dimension (The Twilight Zone)",
-  "total_seasons": 5,
-  "total_episodes": 156,
-  "scrape_date": "2025-12-01T20:44:38",
-  "seasons": [
-    {
-      "season_number": 1,
-      "url": "https://fr.wikipedia.org/wiki/Saison_1_de_La_Quatri%C3%A8me_Dimension",
-      "total_episodes": 36,
-      "episodes": [
-        {
-          "season_number": 1,
-          "episode_number": 1,
-          "title_french": "Solitude",
-          "title_original": "Where Is Everybody?",
-          "air_date_france": null,
-          "air_date_usa": "2 octobre 1959",
-          "summary": "Un homme se réveille dans une ville déserte...",
-          "director": "Robert Stevens",
-          "writer": "Rod Serling",
-          "production_code": "173-3601"
-        }
-      ]
-    }
-  ]
-}
+### Option 3: Python HTTP Server
+```bash
+# Depuis le répertoire web/ :
+cd web
+python -m http.server 8000
+# Puis ouvrez : http://localhost:8000
 ```
 
-## Project Structure
+### Option 4: Node.js
+```bash
+# Depuis le répertoire web/ :
+cd web
+npm start
+# OU
+npx http-server -p 8000
+```
+
+### Option 5: Extension VS Code
+1. Installez l'extension "Live Server"
+2. Clic droit sur `web/index.html` → "Open with Live Server"
+
+## 📁 Structure des Fichiers
 
 ```
-F:/DEV/SRC/TWILIGHT_ZONE/
-├── scraper/
+TWILIGHT_ZONE/
+├── web/                    # Interface web complète
+│   ├── index.html          # Structure HTML principale
+│   ├── styles.css          # Styles avec effets aléatoires
+│   ├── app.js              # Logique JavaScript interactive
+│   ├── shaders.js          # Bibliothèque de shaders Three.js personnalisés
+│   ├── particles.js        # Système de particules
+│   ├── crt-effect.js       # Effet CRT/TV
+│   ├── cursor.js           # Curseur personnalisé
+│   ├── server.py           # Serveur HTTP Python
+│   ├── start-server.bat    # Lanceur automatique Windows
+│   ├── package.json        # Configuration npm
+│   └── data/
+│       └── twilight_zone_episodes.json  # Données des épisodes
+├── scraper/                # Module de scraping
 │   ├── __init__.py
-│   ├── config.py              # Configuration and constants
-│   ├── http_client.py         # HTTP client with rate limiting
-│   ├── season_discovery.py    # Season page discovery
-│   ├── episode_parser.py      # Episode data extraction
-│   └── data_models.py         # Pydantic data models
-├── output/
+│   ├── config.py
+│   ├── data_models.py
+│   ├── episode_parser.py
+│   ├── http_client.py
+│   └── season_discovery.py
+├── scripts/                # Scripts Python principaux
+│   ├── main.py             # Script principal du scraper
+│   └── scraper_english.py  # Scraper pour version anglaise
+├── output/                 # Données générées par le scraper
 │   ├── twilight_zone_episodes.json
+│   ├── twilight_zone_episodes_english.json
 │   └── logs/
-├── tests/
-│   ├── __init__.py
-│   └── sample_html/
-├── main.py                    # Entry point
-├── requirements.txt           # Dependencies
-├── README.md                  # This file
-└── .gitignore
+├── requirements.txt        # Dépendances Python pour le scraper
+├── requirements_app.txt    # Dépendances Python pour l'app Streamlit
+└── README.md               # Ce fichier
 ```
 
-## Configuration
+## 🌌 Shaders Three.js - Personnalité Visuelle par Épisode
 
-You can modify settings in `scraper/config.py`:
+Chaque épisode est assigné un shader unique basé sur son numéro. Les shaders sont des programmes WebGL qui créent des animations en temps réel directement sur le GPU.
 
-- `REQUEST_DELAY`: Delay between requests (default: 2.0 seconds)
-- `RETRY_MAX_ATTEMPTS`: Maximum retry attempts (default: 3)
-- `LOG_LEVEL`: Logging verbosity (default: "INFO")
-- `USER_AGENT`: Custom user agent string
+### Shaders Disponibles
 
-## How It Works
+#### 🎬 Effets Classiques
+1. **spiralVortex** - Spirale hypnotique représentant la distorsion du temps
+2. **glitchMatrix** - Corruption digitale avec effet Matrix
+3. **cosmicNebula** - Nébuleuse cosmique avec bruit procédural
+4. **psychedelicWaves** - Vagues sinusoïdales multicolores
+5. **fractalZoom** - Motifs fractals avec zoom dynamique
+6. **plasmaStorm** - Plasma énergétique animé
+7. **tunnelVision** - Vision tunnel avec perspective radiale
+8. **retroStatic** - Statique TV vintage authentique
+9. **kaleidoscope** - Symétrie kaléidoscopique à 6 segments
+10. **digitalRain** - Pluie de code digital
+11. **voidPulse** - Pulsations cosmiques concentriques
+12. **chromaticShift** - Aberration chromatique RGB
 
-### 1. Season Discovery
+#### 📸 Effets Post-Processing / DOF
+13. **radialBlurDOF** - Flou radial avec profondeur de champ
+14. **bokehHexagon** - Bokeh hexagonal multi-couches animé
+15. **gaussianDream** - Flou gaussien avec aberration chromatique
+16. **motionBlurTrail** - Traînées de motion blur directionnelles
+17. **lensDistortion** - Distorsion de lentille barrel avec vignette
 
-The scraper uses two strategies to find all season pages:
-- Parses the main Wikipedia page for season links
-- Attempts sequential URLs (Saison_1, Saison_2, etc.) until consecutive failures
+### Fonctionnement
 
-### 2. Episode Parsing
+- Chaque shader utilise GLSL (OpenGL Shading Language)
+- Animation en temps réel à 60 FPS
+- Les uniformes `time` et `resolution` sont passés à chaque frame
+- Opacity augmente au survol (0.4 → 0.6)
+- **Optimisé pour les performances** :
+  - 🚀 **Lazy Loading** avec Intersection Observer
+  - 📊 Maximum 20 contextes WebGL actifs simultanément
+  - ♻️ Les shaders hors écran sont automatiquement désactivés
+  - 🧹 Nettoyage automatique de la mémoire GPU
+  - ⚡ Rendu uniquement pour les cartes visibles
+- **Intégration du titre** :
+  - 📝 Titre de l'épisode affiché dans le shader au survol
+  - ✨ Effet de lueur et shimmer animé
+  - 🏷️ Badge du numéro d'épisode avec pulsation
+  - 🌫️ Backdrop blur pour la lisibilité
+  - 🎭 Apparition en fondu au hover
 
-French Wikipedia uses H3 headings for episodes (e.g., "Épisode 1: Solitude") rather than traditional tables. The parser:
-- Finds all H3 headings matching the pattern "Épisode X: Title"
-- Extracts episode numbers and titles from headings
-- Parses the content section following each heading for additional details
+## 🎭 Effets CSS Aléatoires
 
-### 3. Rate Limiting
+En plus des shaders, chaque carte reçoit 1 à 3 effets CSS parmi :
 
-To be respectful to Wikipedia's servers:
-- Minimum 2-second delay between all requests
-- Exponential backoff retry logic (4s, 8s, 16s)
-- Maximum 3 retry attempts per request
-- Proper User-Agent headers
+### Distorsion & Glitch
+- `effect-glitch` - Léger effet de glitch
+- `effect-scanlines` - Lignes de balayage TV
+- `effect-vhs` - Tracking VHS vintage
+- `effect-chromatic` - Aberration chromatique
+- `effect-noise` - Bruit statique
 
-## Results
+### Inclinaisons & Rotations
+- `effect-tilt-left/right` - Inclinaison subtile
+- `effect-tilt-strong-left/right` - Inclinaison prononcée
+- `effect-curve` - Courbure TV rétro
+- `effect-curve-strong` - Courbure prononcée
 
-Successfully scraped:
-- **5 seasons** of The Twilight Zone
-- **156 episodes** total
-  - Season 1: 36 episodes
-  - Season 2: 29 episodes
-  - Season 3: 37 episodes
-  - Season 4: 18 episodes
-  - Season 5: 36 episodes
+### Teintes de Couleur
+- `effect-tint-red` - Teinte rouge
+- `effect-tint-blue` - Teinte bleue
+- `effect-tint-green` - Teinte verte
+- `effect-tint-purple` - Teinte violette
+- `effect-tint-yellow` - Teinte jaune
 
-## Logging
+### Bordures Spéciales
+- `effect-border-weird` - Bordure asymétrique
+- `effect-border-dotted` - Bordure pointillée
+- `effect-border-dashed` - Bordure en tirets
 
-Logs are saved to `output/logs/scraper_YYYYMMDD_HHMMSS.log` with:
-- Timestamped entries
-- Request/response details
-- Parsing progress
-- Error messages and warnings
+### Animations
+- `effect-pulse-glow` - Pulsation lumineuse
+- `effect-float` - Flottement vertical
+- `effect-film-grain` - Grain de film animé
 
-## Error Handling
+### Ombres
+- `effect-shadow-heavy` - Ombre prononcée
+- `effect-shadow-glow` - Lueur dorée
+- `effect-shadow-inset` - Ombre interne
 
-The scraper gracefully handles:
-- HTTP errors (403, 404, timeouts)
-- Missing or malformed data
-- Network issues with automatic retries
-- Partial data extraction
+### Effets Spéciaux
+- `effect-blur-edge` - Flou sur les bords
+- `effect-invert-subtle` - Inversion subtile des couleurs
 
-## Notes
+## 🛠️ Technologies Utilisées
 
-- French Wikipedia's Twilight Zone pages have varying levels of detail
-- Some episodes may have minimal information (title only)
-- The scraper extracts all available data without failing on missing fields
-- Output uses UTF-8 encoding to properly handle French characters
+- **HTML5** - Structure sémantique
+- **CSS3** - Animations et effets avancés
+- **JavaScript ES6+** - Logique interactive
+- **Three.js (r128)** - Bibliothèque 3D WebGL
+- **WebGL/GLSL** - Shaders GPU pour animations en temps réel
+- **Fetch API** - Chargement des données
+- **CSS Grid** - Mise en page responsive
+- **CSS Custom Properties** - Thème personnalisable
+- **RequestAnimationFrame** - Boucle d'animation optimisée
 
-## License
+## 🔧 Utilisation des Scripts
 
-This project is for educational purposes. Please respect Wikipedia's [Terms of Use](https://foundation.wikimedia.org/wiki/Terms_of_Use).
-
-## Troubleshooting
-
-### 403 Forbidden Errors
-
-If you encounter 403 errors:
-1. Increase `REQUEST_DELAY` in `config.py` to 3-5 seconds
-2. Check if your IP has been rate-limited
-3. Wait a few minutes before retrying
-
-### No Episodes Found
-
-If episodes aren't being extracted:
-1. Check the log file for detailed error messages
-2. Verify the Wikipedia page structure hasn't changed
-3. Update the episode heading pattern in `episode_parser.py` if needed
-
-### Encoding Issues
-
-The scraper uses UTF-8 encoding throughout. If you encounter encoding issues when reading the JSON file:
-
-```python
-import json
-with open('output/twilight_zone_episodes.json', 'r', encoding='utf-8') as f:
-    data = json.load(f)
+### Scraper Principal (Version Française)
+```bash
+# Depuis la racine du projet :
+python scripts/main.py
 ```
 
-## Future Enhancements
+Génère `output/twilight_zone_episodes.json` avec les données de la version française de Wikipedia.
 
-Potential improvements:
-- Add support for cast and crew extraction
-- Parse episode infoboxes for structured data
-- Add command-line arguments for customization
-- Implement caching to avoid re-scraping
-- Add unit tests for parsers
+### Scraper Version Anglaise
+```bash
+# Depuis la racine du projet :
+python scripts/scraper_english.py
+```
 
-## Author
+Génère `output/twilight_zone_episodes_english.json` avec les données de la version anglaise de Wikipedia.
 
-Created with Claude Code
+**Note:** Les scripts doivent être exécutés depuis la racine du projet pour que Python trouve le module `scraper/`.
 
-## Acknowledgments
+## 📊 Données
 
-- Episode data from French Wikipedia
-- Built with Python, BeautifulSoup, and love for The Twilight Zone
+Les données proviennent de `web/data/twilight_zone_episodes.json` et incluent :
+- 5 saisons
+- 156 épisodes
+- Titres originaux et français
+- Dates de diffusion
+- Résumés et intrigues complètes
+- Réalisateurs, scénaristes, directeurs de la photographie
+- Codes de production
+
+## 🎬 À Propos de The Twilight Zone
+
+The Twilight Zone (La Quatrième Dimension) est une série télévisée américaine créée par Rod Serling, diffusée de 1959 à 1964. Connue pour ses histoires de science-fiction, de fantastique et d'horreur, la série explore des thèmes philosophiques et sociaux à travers des récits surréalistes et souvent ironiques.
+
+---
+
+**"You're traveling through another dimension..."**
+
+*Interface créée avec passion pour célébrer cette série iconique.*
