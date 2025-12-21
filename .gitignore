@@ -37,6 +37,10 @@ output/
 *.json
 *.log
 
+# Videos (too large for git)
+web/videos/
+videos/
+
 # OS
 .DS_Store
 Thumbs.db
