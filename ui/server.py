@@ -10,6 +10,7 @@ import socketserver
 import webbrowser
 import os
 import urllib.parse
+import unicodedata
 from pathlib import Path
 
 PORT = 8000
@@ -22,6 +23,49 @@ VIDEO_BASE_PATH = r"\\Freebox_Server\Videos\Series\Twilight Zone"
 
 class TwilightZoneHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
     """Custom handler with proper MIME types and video serving"""
+
+    def normalize_error_message(self, message):
+        """Normalize error message to ASCII-only for HTTP error responses"""
+        # Replace common Unicode characters with ASCII equivalents
+        replacements = {
+            '\u2019': "'",  # Right single quotation mark
+            '\u2018': "'",  # Left single quotation mark
+            '\u201C': '"',  # Left double quotation mark
+            '\u201D': '"',  # Right double quotation mark
+            '\u2013': '-',  # En dash
+            '\u2014': '--', # Em dash
+            '\u00E9': 'e',  # é
+            '\u00E8': 'e',  # è
+            '\u00EA': 'e',  # ê
+            '\u00EB': 'e',  # ë
+            '\u00E0': 'a',  # à
+            '\u00E2': 'a',  # â
+            '\u00E4': 'a',  # ä
+            '\u00E7': 'c',  # ç
+            '\u00F9': 'u',  # ù
+            '\u00FB': 'u',  # û
+            '\u00FC': 'u',  # ü
+            '\u00EE': 'i',  # î
+            '\u00EF': 'i',  # ï
+            '\u00F4': 'o',  # ô
+            '\u00F6': 'o',  # ö
+        }
+        
+        # First, try to replace known problematic characters
+        normalized = message
+        for unicode_char, ascii_char in replacements.items():
+            normalized = normalized.replace(unicode_char, ascii_char)
+        
+        # Then, use NFKD normalization and remove non-ASCII characters
+        try:
+            # Normalize to NFKD (decompose) then encode to ASCII, ignoring errors
+            normalized = unicodedata.normalize('NFKD', normalized)
+            normalized = normalized.encode('ascii', 'ignore').decode('ascii')
+        except Exception:
+            # Fallback: just remove non-ASCII characters
+            normalized = ''.join(char for char in normalized if ord(char) < 128)
+        
+        return normalized
 
     extensions_map = {
         '.html': 'text/html',
@@ -102,7 +146,7 @@ class TwilightZoneHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
                 
                 error_msg = f"Video file not found: {filename}"
                 print(f"[ERROR] {error_msg}")
-                self.send_error(404, error_msg)
+                self.send_error(404, self.normalize_error_message(error_msg))
                 return
             
             print(f"[VIDEO] File found, size: {os.path.getsize(video_path)} bytes")
@@ -155,17 +199,29 @@ class TwilightZoneHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         except FileNotFoundError as e:
             error_msg = f"Video file not found: {filename}\nError: {str(e)}"
             print(f"[ERROR] {error_msg}")
-            self.send_error(404, error_msg)
+            self.send_error(404, self.normalize_error_message(error_msg))
         except PermissionError as e:
             error_msg = f"Permission denied accessing video: {filename}\nError: {str(e)}"
             print(f"[ERROR] {error_msg}")
-            self.send_error(403, error_msg)
+            self.send_error(403, self.normalize_error_message(error_msg))
+        except (ConnectionResetError, ConnectionAbortedError, BrokenPipeError) as e:
+            # Client closed connection - this is normal, don't log as error
+            error_type = type(e).__name__
+            print(f"[INFO] Client closed connection while serving: {filename} ({error_type})")
+            # Don't send error response as connection is already closed
+            return
         except Exception as e:
             error_msg = f"Error serving video: {filename}\nError: {str(e)}\nType: {type(e).__name__}"
             print(f"[ERROR] {error_msg}")
             import traceback
             traceback.print_exc()
-            self.send_error(500, error_msg)
+            # Only send error if connection is still open
+            try:
+                # Normalize error message to avoid Unicode encoding issues
+                self.send_error(500, self.normalize_error_message(error_msg))
+            except (ConnectionResetError, BrokenPipeError, OSError):
+                # Connection already closed, can't send error
+                print(f"[INFO] Could not send error response - connection closed")
 
     def end_headers(self):
         # Add CORS headers if needed

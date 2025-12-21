@@ -578,6 +578,7 @@ class TwilightZoneApp {
         const badge = document.getElementById('videoModalBadge');
         const title = document.getElementById('videoModalTitle');
         const titleFrench = document.getElementById('videoModalTitleFrench');
+        const crew = document.getElementById('videoModalCrew');
         const videoPlayer = document.getElementById('episodeVideoPlayer');
         const videoSource = document.getElementById('episodeVideoSource');
 
@@ -591,6 +592,22 @@ class TwilightZoneApp {
             titleFrench.style.display = 'block';
         } else {
             titleFrench.style.display = 'none';
+        }
+        
+        // Afficher le réalisateur et l'écrivain
+        const crewInfo = [];
+        if (episode.director && episode.director.trim()) {
+            crewInfo.push(`Directed by ${this.escapeHtml(episode.director)}`);
+        }
+        if (episode.writer && episode.writer.trim()) {
+            crewInfo.push(`Written by ${this.escapeHtml(episode.writer)}`);
+        }
+        
+        if (crewInfo.length > 0) {
+            crew.innerHTML = crewInfo.join(' • ');
+            crew.style.display = 'block';
+        } else {
+            crew.style.display = 'none';
         }
         
         // Set video source
