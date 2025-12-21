@@ -11,6 +11,7 @@ import webbrowser
 import os
 import urllib.parse
 import unicodedata
+import urllib.request
 from pathlib import Path
 
 PORT = 8000
@@ -90,6 +91,11 @@ class TwilightZoneHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
     def do_GET(self):
         """Handle GET requests, including video API endpoint"""
+        # Handle Internet Archive proxy endpoint
+        if self.path.startswith('/api/archive/'):
+            self.handle_archive_proxy()
+            return
+        
         # Handle video API endpoint
         if self.path.startswith('/api/video/'):
             self.handle_video_request()
@@ -222,6 +228,198 @@ class TwilightZoneHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             except (ConnectionResetError, BrokenPipeError, OSError):
                 # Connection already closed, can't send error
                 print(f"[INFO] Could not send error response - connection closed")
+
+    def handle_archive_proxy(self):
+        """Proxy pour les vidéos Internet Archive avec support CORS"""
+        try:
+            # Extraire l'URL encodée depuis le chemin
+            encoded_url = self.path.replace('/api/archive/', '')
+            target_url = urllib.parse.unquote(encoded_url)
+            
+            print(f"\n[ARCHIVE PROXY] ===== Archive Request =====")
+            print(f"[ARCHIVE PROXY] Target URL: {target_url}")
+            
+            # Vérifier que c'est bien une URL Internet Archive
+            if not target_url.startswith('https://') or 'archive.org' not in target_url:
+                self.send_error(400, "Invalid archive URL")
+                return
+            
+            # Récupérer le header Range si présent
+            range_header = self.headers.get('Range')
+            
+            # Préparer la requête vers Internet Archive
+            req = urllib.request.Request(target_url)
+            req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36')
+            
+            # Si on a un Range header, le transmettre
+            if range_header:
+                req.add_header('Range', range_header)
+            
+            try:
+                # Ouvrir la connexion vers Internet Archive
+                with urllib.request.urlopen(req, timeout=30) as response:
+                    # Récupérer les headers de la réponse
+                    content_type = response.headers.get('Content-Type', 'video/mp4')
+                    content_length = response.headers.get('Content-Length')
+                    content_range = response.headers.get('Content-Range')
+                    status_code = response.getcode()
+                    
+                    print(f"[ARCHIVE PROXY] Status: {status_code}")
+                    print(f"[ARCHIVE PROXY] Content-Type: {content_type}")
+                    print(f"[ARCHIVE PROXY] Content-Length: {content_length}")
+                    
+                    # Envoyer les headers de réponse avec CORS
+                    self.send_response(status_code)
+                    self.send_header('Content-Type', content_type)
+                    self.send_header('Access-Control-Allow-Origin', '*')
+                    self.send_header('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS')
+                    self.send_header('Access-Control-Allow-Headers', 'Range')
+                    self.send_header('Access-Control-Expose-Headers', 'Content-Length, Content-Range, Accept-Ranges')
+                    self.send_header('Accept-Ranges', 'bytes')
+                    
+                    if content_length:
+                        self.send_header('Content-Length', content_length)
+                    if content_range:
+                        self.send_header('Content-Range', content_range)
+                    
+                    self.end_headers()
+                    
+                    # Streamer les données
+                    chunk_size = 8192
+                    while True:
+                        chunk = response.read(chunk_size)
+                        if not chunk:
+                            break
+                        try:
+                            self.wfile.write(chunk)
+                        except (ConnectionResetError, ConnectionAbortedError, BrokenPipeError):
+                            print(f"[ARCHIVE PROXY] Client closed connection")
+                            return
+                            
+            except urllib.error.HTTPError as e:
+                print(f"[ARCHIVE PROXY] HTTP Error: {e.code} - {e.reason}")
+                self.send_error(e.code, f"Archive proxy error: {e.reason}")
+            except urllib.error.URLError as e:
+                print(f"[ARCHIVE PROXY] URL Error: {e.reason}")
+                self.send_error(502, f"Failed to connect to archive: {e.reason}")
+            except Exception as e:
+                print(f"[ARCHIVE PROXY] Error: {str(e)}")
+                self.send_error(500, f"Archive proxy error: {str(e)}")
+                
+        except Exception as e:
+            error_msg = f"Error in archive proxy: {str(e)}"
+            print(f"[ERROR] {error_msg}")
+            import traceback
+            traceback.print_exc()
+            try:
+                self.send_error(500, self.normalize_error_message(error_msg))
+            except (ConnectionResetError, ConnectionAbortedError, BrokenPipeError):
+                print(f"[ARCHIVE PROXY] Could not send error response - connection closed")
+
+    def do_OPTIONS(self):
+        """Handle OPTIONS requests for CORS preflight"""
+        self.send_response(200)
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Range')
+        self.send_header('Access-Control-Max-Age', '3600')
+        self.end_headers()
+
+    def handle_archive_proxy(self):
+        """Proxy pour les vidéos Internet Archive avec support CORS"""
+        try:
+            # Extraire l'URL encodée depuis le chemin
+            encoded_url = self.path.replace('/api/archive/', '')
+            target_url = urllib.parse.unquote(encoded_url)
+            
+            print(f"\n[ARCHIVE PROXY] ===== Archive Request =====")
+            print(f"[ARCHIVE PROXY] Target URL: {target_url}")
+            
+            # Vérifier que c'est bien une URL Internet Archive
+            if not target_url.startswith('https://') or 'archive.org' not in target_url:
+                self.send_error(400, "Invalid archive URL")
+                return
+            
+            # Récupérer le header Range si présent
+            range_header = self.headers.get('Range')
+            
+            # Préparer la requête vers Internet Archive
+            req = urllib.request.Request(target_url)
+            req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36')
+            
+            # Si on a un Range header, le transmettre
+            if range_header:
+                req.add_header('Range', range_header)
+            
+            try:
+                # Ouvrir la connexion vers Internet Archive
+                with urllib.request.urlopen(req, timeout=30) as response:
+                    # Récupérer les headers de la réponse
+                    content_type = response.headers.get('Content-Type', 'video/mp4')
+                    content_length = response.headers.get('Content-Length')
+                    content_range = response.headers.get('Content-Range')
+                    status_code = response.getcode()
+                    
+                    print(f"[ARCHIVE PROXY] Status: {status_code}")
+                    print(f"[ARCHIVE PROXY] Content-Type: {content_type}")
+                    print(f"[ARCHIVE PROXY] Content-Length: {content_length}")
+                    
+                    # Envoyer les headers de réponse avec CORS
+                    self.send_response(status_code)
+                    self.send_header('Content-Type', content_type)
+                    self.send_header('Access-Control-Allow-Origin', '*')
+                    self.send_header('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS')
+                    self.send_header('Access-Control-Allow-Headers', 'Range')
+                    self.send_header('Access-Control-Expose-Headers', 'Content-Length, Content-Range, Accept-Ranges')
+                    self.send_header('Accept-Ranges', 'bytes')
+                    
+                    if content_length:
+                        self.send_header('Content-Length', content_length)
+                    if content_range:
+                        self.send_header('Content-Range', content_range)
+                    
+                    self.end_headers()
+                    
+                    # Streamer les données
+                    chunk_size = 8192
+                    while True:
+                        chunk = response.read(chunk_size)
+                        if not chunk:
+                            break
+                        try:
+                            self.wfile.write(chunk)
+                        except (ConnectionResetError, ConnectionAbortedError, BrokenPipeError):
+                            print(f"[ARCHIVE PROXY] Client closed connection")
+                            return
+                            
+            except urllib.error.HTTPError as e:
+                print(f"[ARCHIVE PROXY] HTTP Error: {e.code} - {e.reason}")
+                self.send_error(e.code, f"Archive proxy error: {e.reason}")
+            except urllib.error.URLError as e:
+                print(f"[ARCHIVE PROXY] URL Error: {e.reason}")
+                self.send_error(502, f"Failed to connect to archive: {e.reason}")
+            except Exception as e:
+                print(f"[ARCHIVE PROXY] Error: {str(e)}")
+                self.send_error(500, f"Archive proxy error: {str(e)}")
+                
+        except Exception as e:
+            error_msg = f"Error in archive proxy: {str(e)}"
+            print(f"[ERROR] {error_msg}")
+            import traceback
+            traceback.print_exc()
+            try:
+                self.send_error(500, self.normalize_error_message(error_msg))
+            except (ConnectionResetError, ConnectionAbortedError, BrokenPipeError):
+                print(f"[ARCHIVE PROXY] Could not send error response - connection closed")
+
+    def do_OPTIONS(self):
+        """Handle OPTIONS requests for CORS preflight"""
+        self.send_response(200)
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Range')
+        self.send_header('Access-Control-Max-Age', '3600')
+        self.end_headers()
 
     def end_headers(self):
         # Add CORS headers if needed

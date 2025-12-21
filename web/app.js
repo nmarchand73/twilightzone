@@ -18,6 +18,14 @@ class TwilightZoneApp {
         this.modalShaderScene = null; // Modal shader scene
         this.backgroundShaderScene = null; // Background shader scene
         this.userHasInteracted = false; // Track if user has interacted with page (for autoplay)
+        this.currentSeries = 'twilight-zone'; // Current active series
+        this.thunderbirdsEpisodes = []; // Thunderbirds episodes data
+        this.thunderbirdsFiltered = []; // Filtered Thunderbirds episodes
+        this.thunderbirdsCurrentSeason = 'all';
+        this.thunderbirdsCurrentDirector = 'all';
+        this.thunderbirdsCurrentWriter = 'all';
+        this.thunderbirdsSearchTerm = '';
+        this.thunderbirdsSortAscending = true;
 
         // Table de correspondance entre épisodes et noms de fichiers vidéo réels
         this.videoFileMap = {
@@ -553,6 +561,13 @@ class TwilightZoneApp {
     }
 
     getVideoFilePath(episode) {
+        // Si c'est un épisode Thunderbirds, utiliser le proxy serveur pour contourner CORS
+        if (episode.series === 'thunderbirds' || episode.archiveUrl) {
+            const archiveUrl = episode.archiveUrl || episode.videoUrl;
+            // Encoder l'URL pour le proxy
+            return `/api/archive/${encodeURIComponent(archiveUrl)}`;
+        }
+        
         // Génère le chemin du fichier vidéo basé sur les données de l'épisode
         // Utilise la table de correspondance pour trouver le vrai nom de fichier
         const season = String(episode.season_number).padStart(2, '0');
@@ -583,7 +598,15 @@ class TwilightZoneApp {
         const videoSource = document.getElementById('episodeVideoSource');
 
         // Set content
-        badge.textContent = `Episode ${episode.episode_number_overall} • Season ${episode.season_number}`;
+        if (episode.series === 'thunderbirds') {
+            if (episode.season_number === 0) {
+                badge.textContent = `Épisode spécial`;
+            } else {
+                badge.textContent = `Épisode ${episode.episode_number} • Saison ${episode.season_number}`;
+            }
+        } else {
+            badge.textContent = `Episode ${episode.episode_number_overall} • Season ${episode.season_number}`;
+        }
         title.textContent = episode.title_original;
         
         // Afficher le titre français si disponible
@@ -612,7 +635,12 @@ class TwilightZoneApp {
         
         // Set video source
         const videoPath = this.getVideoFilePath(episode);
+        
+        // Toutes les vidéos passent maintenant par le serveur (local ou proxy archive)
         videoSource.src = videoPath;
+        videoSource.type = 'video/mp4';
+        videoPlayer.crossOrigin = null; // Pas besoin de CORS car on passe par notre serveur
+        
         videoPlayer.load();
 
         // Handle video errors
@@ -686,12 +714,16 @@ class TwilightZoneApp {
         videoPlayer.pause();
         videoPlayer.currentTime = 0;
 
-        // Hide modal
+        // Add closing class for exit animation
+        modal.classList.add('closing');
         modal.classList.remove('active');
         document.body.style.overflow = '';
 
         // Remove from DOM after animation
-        setTimeout(() => modal.classList.add('hidden'), 300);
+        setTimeout(() => {
+            modal.classList.remove('closing');
+            modal.classList.add('hidden');
+        }, 500);
     }
 
 
@@ -836,19 +868,265 @@ class TwilightZoneApp {
             // Create background shader first
             this.createBackgroundShader();
 
-            await this.loadData();
+            await Promise.all([
+                this.loadData(),
+                this.loadThunderbirdsData()
+            ]);
             this.setupEventListeners();
+            this.setupTabNavigation();
             this.setupIntersectionObserver();
             this.setupPlotModal();
             this.setupVideoModal();
             this.setupParallax();
             // Appliquer le tri initial après le chargement
             this.applyFilters();
+            this.applyThunderbirdsFilters();
+            // Appliquer le thème initial
+            this.applyTheme(this.currentSeries);
             this.hideLoading();
         } catch (error) {
             console.error('Error initializing app:', error);
             this.showError('Failed to load episode data. Please refresh the page.');
         }
+    }
+
+    async loadThunderbirdsData() {
+        try {
+            const response = await fetch('/data/thunderbirds_episodes.json');
+            if (!response.ok) {
+                throw new Error(`Failed to load Thunderbirds data: ${response.statusText}`);
+            }
+            const data = await response.json();
+            
+            // Les données sont déjà dans le bon format depuis le JSON
+            this.thunderbirdsEpisodes = data;
+            this.thunderbirdsFiltered = [...this.thunderbirdsEpisodes];
+            
+            // Populate filters after loading data
+            this.populateThunderbirdsFilters();
+            this.applyThunderbirdsFilters();
+            
+            console.log(`Loaded ${this.thunderbirdsEpisodes.length} Thunderbirds episodes from JSON`);
+        } catch (error) {
+            console.error('Error loading Thunderbirds data:', error);
+            // Fallback: utiliser les données par défaut si le JSON ne peut pas être chargé
+            this.initThunderbirdsDataFallback();
+        }
+    }
+
+    initThunderbirdsDataFallback() {
+        // Fallback si le JSON ne peut pas être chargé
+        // Cette méthode peut être supprimée une fois que le JSON est confirmé fonctionnel
+        console.warn('Using fallback Thunderbirds data');
+        this.thunderbirdsEpisodes = [];
+        this.thunderbirdsFiltered = [];
+    }
+
+    getThunderbirdsFrenchTitle(episodeNum) {
+        // Titres français des épisodes Thunderbirds selon l'ordre officiel
+        const frenchTitles = {
+            0: "Présentation des Sentinelles de l'Air", // Épisode spécial (audio)
+            1: "Piégé dans le ciel",
+            2: "Le Piège de la mort",
+            3: "Cité en feu",
+            4: "Sonde solaire",
+            5: "L'Invité indésirable",
+            6: "L'Atome puissant",
+            7: "Caveau de la mort",
+            8: "Opération Crash-Dive",
+            9: "Bouge et tu es mort",
+            10: "Invasion martienne",
+            11: "Au bord du désastre",
+            12: "Les Périls de Pénélope",
+            13: "Terreur à New York",
+            14: "Fin de route",
+            15: "Jour de catastrophe",
+            16: "Au bord de l'impact",
+            17: "Intrus désespéré",
+            18: "30 minutes après midi",
+            19: "Les Imposteurs",
+            20: "L'Homme du MI5",
+            21: "Cri de loup",
+            22: "Danger dans les profondeurs",
+            23: "Mission de la Duchesse",
+            24: "Attaque des alligators",
+            25: "Le Cham-Cham",
+            26: "Risque de sécurité",
+            27: "Enfer atlantique", // Saison 2
+            28: "Chemin de destruction", // Saison 2
+            29: "Alias M. Hackenbacker", // Saison 2
+            30: "Les Vacances de Lord Parker", // Saison 2
+            31: "Ricochet", // Saison 2
+            32: "Donner ou prendre un million" // Saison 2
+        };
+        return frenchTitles[episodeNum] || '';
+    }
+
+    setupTabNavigation() {
+        const tabs = document.querySelectorAll('.tab-button');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const series = tab.dataset.series;
+                this.switchSeries(series);
+            });
+        });
+    }
+
+    switchSeries(series) {
+        this.currentSeries = series;
+        
+        // Changer le thème visuel
+        this.applyTheme(series);
+        
+        // Mettre à jour les onglets
+        document.querySelectorAll('.tab-button').forEach(btn => {
+            if (btn.dataset.series === series) {
+                btn.classList.add('active');
+                btn.setAttribute('aria-selected', 'true');
+            } else {
+                btn.classList.remove('active');
+                btn.setAttribute('aria-selected', 'false');
+            }
+        });
+
+        // Afficher/masquer les panneaux
+        document.querySelectorAll('.series-panel').forEach(panel => {
+            panel.classList.remove('active');
+        });
+
+        if (series === 'twilight-zone') {
+            document.getElementById('twilight-zone-panel').classList.add('active');
+        } else if (series === 'thunderbirds') {
+            document.getElementById('thunderbirds-panel').classList.add('active');
+            this.applyThunderbirdsFilters();
+        }
+    }
+
+    applyTheme(series) {
+        const body = document.body;
+        
+        // Retirer tous les thèmes
+        body.classList.remove('twilight-zone-theme', 'thunderbirds-theme');
+        
+        // Appliquer le thème approprié
+        if (series === 'thunderbirds') {
+            body.classList.add('thunderbirds-theme');
+        } else {
+            body.classList.add('twilight-zone-theme');
+        }
+        
+        // Les variables CSS sont déjà définies dans le CSS, 
+        // la classe sur body les appliquera automatiquement
+    }
+
+    renderThunderbirdsEpisodes() {
+        const grid = document.getElementById('thunderbirdsEpisodesGrid');
+        const noResults = document.getElementById('thunderbirdsNoResults');
+        const displayCount = document.getElementById('thunderbirdsDisplayCount');
+        const loading = document.getElementById('thunderbirdsLoading');
+
+        if (!grid) return;
+
+        grid.innerHTML = '';
+        loading.classList.add('hidden');
+
+        displayCount.textContent = `Affichage de ${this.thunderbirdsFiltered.length} épisode${this.thunderbirdsFiltered.length !== 1 ? 's' : ''}`;
+
+        if (this.thunderbirdsFiltered.length === 0) {
+            noResults.classList.remove('hidden');
+            return;
+        } else {
+            noResults.classList.add('hidden');
+        }
+
+        this.thunderbirdsFiltered.forEach(episode => {
+            const card = this.createThunderbirdsEpisodeCard(episode);
+            grid.appendChild(card);
+        });
+    }
+
+    createThunderbirdsEpisodeCard(episode) {
+        const card = document.createElement('article');
+        card.className = 'episode-card';
+        card.setAttribute('role', 'article');
+        
+        // Gérer le numéro d'épisode pour l'affichage
+        const episodeNum = episode.season_number === 0 ? 0 : episode.episode_number;
+        const totalEpisodes = 32; // 32 épisodes TV officiels (sans l'épisode 0 spécial)
+        
+        card.setAttribute('aria-label', `Épisode ${episode.episode_number_overall}: ${episode.title_original}`);
+
+        // Apply random strange effects to each episode (same as Twilight Zone)
+        this.applyRandomEffects(card, episode);
+
+        // Store episode data for lazy shader creation
+        card._episodeData = episode;
+        card._shaderData = null;
+
+        // Observe card for lazy shader loading
+        if (this.intersectionObserver) {
+            this.intersectionObserver.observe(card);
+        }
+
+        // Format badge text based on episode type
+        let badgeText = '';
+        if (episode.season_number === 0) {
+            badgeText = 'Spécial';
+        } else {
+            badgeText = `S${episode.season_number}E${episodeNum}`;
+        }
+
+        card.innerHTML = `
+            <div class="episode-header">
+                <div class="episode-meta">
+                    <span class="episode-badge episode-badge-season">${badgeText}</span>
+                    <span class="episode-badge episode-badge-overall" title="Épisode ${episode.episode_number_overall} sur ${totalEpisodes + 1}">#${episode.episode_number_overall}</span>
+                </div>
+                <h2 class="episode-title">${this.escapeHtml(episode.title_original)}</h2>
+                ${episode.title_french ? `<p class="episode-title-french">${this.escapeHtml(episode.title_french)}</p>` : ''}
+                ${episode.air_date || episode.air_date_usa ? `<p class="episode-date">Diffusé: ${this.escapeHtml(episode.air_date || episode.air_date_usa)}</p>` : ''}
+            </div>
+
+            ${episode.summary ? `<p class="episode-summary">${this.escapeHtml(episode.summary)}</p>` : ''}
+
+            <div class="episode-details">
+                ${episode.director && episode.director !== 'N/A' ? `
+                    <div class="detail-row">
+                        <span class="detail-label">Réalisateur:</span>
+                        <span class="detail-value">${this.escapeHtml(episode.director)}</span>
+                    </div>
+                ` : ''}
+                ${episode.writer && episode.writer !== 'N/A' ? `
+                    <div class="detail-row">
+                        <span class="detail-label">Scénariste:</span>
+                        <span class="detail-value">${this.escapeHtml(episode.writer)}</span>
+                    </div>
+                ` : ''}
+                ${episode.type ? `
+                    <div class="detail-row">
+                        <span class="detail-label">Type:</span>
+                        <span class="detail-value">${episode.type === 'audio_special' ? 'Épisode audio spécial' : episode.type === 'clip_show' ? 'Clip show' : this.escapeHtml(episode.type)}</span>
+                    </div>
+                ` : ''}
+            </div>
+
+            <div class="episode-actions">
+                <button class="watch-button" aria-label="Regarder l'épisode">
+                    ▶ Regarder l'épisode
+                </button>
+            </div>
+        `;
+
+        // Add click handler for watch button
+        const watchButton = card.querySelector('.watch-button');
+        if (watchButton) {
+            watchButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.openVideoModal(episode);
+            });
+        }
+
+        return card;
     }
 
     setupParallax() {
@@ -1086,6 +1364,166 @@ class TwilightZoneApp {
             sortToggle.textContent = this.sortAscending ? 'Sort: Oldest First' : 'Sort: Newest First';
             this.applyFilters();
         });
+
+        // Thunderbirds search input
+        const thunderbirdsSearchInput = document.getElementById('thunderbirdsSearchInput');
+        if (thunderbirdsSearchInput) {
+            thunderbirdsSearchInput.addEventListener('input', (e) => {
+                this.thunderbirdsSearchTerm = e.target.value.toLowerCase();
+                this.applyThunderbirdsFilters();
+            });
+        }
+
+        // Thunderbirds season filter
+        const thunderbirdsSeasonFilter = document.getElementById('thunderbirdsSeasonFilter');
+        if (thunderbirdsSeasonFilter) {
+            thunderbirdsSeasonFilter.addEventListener('change', (e) => {
+                this.thunderbirdsCurrentSeason = e.target.value;
+                this.applyThunderbirdsFilters();
+            });
+        }
+
+        // Thunderbirds director filter
+        const thunderbirdsDirectorFilter = document.getElementById('thunderbirdsDirectorFilter');
+        if (thunderbirdsDirectorFilter) {
+            thunderbirdsDirectorFilter.addEventListener('change', (e) => {
+                this.thunderbirdsCurrentDirector = e.target.value;
+                this.applyThunderbirdsFilters();
+            });
+        }
+
+        // Thunderbirds writer filter
+        const thunderbirdsWriterFilter = document.getElementById('thunderbirdsWriterFilter');
+        if (thunderbirdsWriterFilter) {
+            thunderbirdsWriterFilter.addEventListener('change', (e) => {
+                this.thunderbirdsCurrentWriter = e.target.value;
+                this.applyThunderbirdsFilters();
+            });
+        }
+
+        // Thunderbirds sort toggle
+        const thunderbirdsSortToggle = document.getElementById('thunderbirdsSortToggle');
+        if (thunderbirdsSortToggle) {
+            thunderbirdsSortToggle.textContent = this.thunderbirdsSortAscending ? 'Trier: Plus ancien d\'abord' : 'Trier: Plus récent d\'abord';
+            thunderbirdsSortToggle.addEventListener('click', () => {
+                this.thunderbirdsSortAscending = !this.thunderbirdsSortAscending;
+                thunderbirdsSortToggle.textContent = this.thunderbirdsSortAscending ? 'Trier: Plus ancien d\'abord' : 'Trier: Plus récent d\'abord';
+                this.applyThunderbirdsFilters();
+            });
+        }
+    }
+
+    populateThunderbirdsFilters() {
+        this.populateThunderbirdsDirectorFilter();
+        this.populateThunderbirdsWriterFilter();
+    }
+
+    populateThunderbirdsDirectorFilter() {
+        const directorFilter = document.getElementById('thunderbirdsDirectorFilter');
+        if (!directorFilter) return;
+
+        // Clear existing options except "All"
+        while (directorFilter.children.length > 1) {
+            directorFilter.removeChild(directorFilter.lastChild);
+        }
+
+        // Extract unique directors
+        const directors = new Set();
+        this.thunderbirdsEpisodes.forEach(ep => {
+            if (ep.director && ep.director.trim() && ep.director !== 'N/A') {
+                directors.add(ep.director.trim());
+            }
+        });
+
+        // Sort alphabetically
+        const sortedDirectors = Array.from(directors).sort();
+
+        // Add options
+        sortedDirectors.forEach(director => {
+            const option = document.createElement('option');
+            option.value = director;
+            option.textContent = director;
+            directorFilter.appendChild(option);
+        });
+    }
+
+    populateThunderbirdsWriterFilter() {
+        const writerFilter = document.getElementById('thunderbirdsWriterFilter');
+        if (!writerFilter) return;
+
+        // Clear existing options except "All"
+        while (writerFilter.children.length > 1) {
+            writerFilter.removeChild(writerFilter.lastChild);
+        }
+
+        // Extract unique writers
+        const writers = new Set();
+        this.thunderbirdsEpisodes.forEach(ep => {
+            if (ep.writer && ep.writer.trim() && ep.writer !== 'N/A') {
+                writers.add(ep.writer.trim());
+            }
+        });
+
+        // Sort alphabetically
+        const sortedWriters = Array.from(writers).sort();
+
+        // Add options
+        sortedWriters.forEach(writer => {
+            const option = document.createElement('option');
+            option.value = writer;
+            option.textContent = writer;
+            writerFilter.appendChild(option);
+        });
+    }
+
+    applyThunderbirdsFilters() {
+        let filtered = [...this.thunderbirdsEpisodes];
+
+        // Apply season filter
+        if (this.thunderbirdsCurrentSeason !== 'all') {
+            const seasonNum = parseInt(this.thunderbirdsCurrentSeason);
+            filtered = filtered.filter(ep => ep.season_number === seasonNum);
+        }
+
+        // Apply director filter
+        if (this.thunderbirdsCurrentDirector !== 'all') {
+            filtered = filtered.filter(ep => 
+                ep.director && ep.director.trim() === this.thunderbirdsCurrentDirector
+            );
+        }
+
+        // Apply writer filter
+        if (this.thunderbirdsCurrentWriter !== 'all') {
+            filtered = filtered.filter(ep => 
+                ep.writer && ep.writer.trim() === this.thunderbirdsCurrentWriter
+            );
+        }
+
+        // Apply search filter
+        if (this.thunderbirdsSearchTerm) {
+            filtered = filtered.filter(ep => {
+                const searchableText = [
+                    ep.title_original,
+                    ep.title_french,
+                    ep.summary,
+                    ep.director,
+                    ep.writer
+                ].filter(Boolean).join(' ').toLowerCase();
+                return searchableText.includes(this.thunderbirdsSearchTerm);
+            });
+        }
+
+        // Apply sorting
+        filtered.sort((a, b) => {
+            if (this.thunderbirdsSortAscending) {
+                return a.episode_number_overall - b.episode_number_overall;
+            } else {
+                return b.episode_number_overall - a.episode_number_overall;
+            }
+        });
+
+        this.thunderbirdsFiltered = filtered;
+        this.renderThunderbirdsEpisodes();
     }
 
     applyFilters() {

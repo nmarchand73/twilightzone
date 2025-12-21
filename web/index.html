@@ -11,17 +11,31 @@
     <div class="background-shader" id="backgroundShader"></div>
 
     <div class="container">
-        <!-- Header Section -->
-        <header class="header">
-            <div class="header-content">
-                <h1 class="title">The Twilight Zone</h1>
-                <p class="subtitle">1959-1964 Original Series</p>
-                <div class="series-info">
-                    <span class="info-badge" id="totalSeasons">5 Seasons</span>
-                    <span class="info-badge" id="totalEpisodes">156 Episodes</span>
+        <!-- Navigation Tabs -->
+        <nav class="series-tabs" role="tablist">
+            <button class="tab-button active" data-series="twilight-zone" role="tab" aria-selected="true" aria-controls="twilight-zone-panel">
+                <span class="tab-icon">🌌</span>
+                <span class="tab-text">The Twilight Zone</span>
+            </button>
+            <button class="tab-button" data-series="thunderbirds" role="tab" aria-selected="false" aria-controls="thunderbirds-panel">
+                <span class="tab-icon">✈️</span>
+                <span class="tab-text">Les Sentinelles de l'Air</span>
+            </button>
+        </nav>
+
+        <!-- Twilight Zone Panel -->
+        <div id="twilight-zone-panel" class="series-panel active" role="tabpanel">
+            <!-- Header Section -->
+            <header class="header">
+                <div class="header-content">
+                    <h1 class="title">The Twilight Zone</h1>
+                    <p class="subtitle">1959-1964 Original Series</p>
+                    <div class="series-info">
+                        <span class="info-badge" id="totalSeasons">5 Seasons</span>
+                        <span class="info-badge" id="totalEpisodes">156 Episodes</span>
+                    </div>
                 </div>
-            </div>
-        </header>
+            </header>
 
         <!-- Search and Filter Section -->
         <div class="controls">
@@ -83,10 +97,89 @@
             <p>No episodes found matching your search.</p>
         </div>
 
-        <!-- Footer -->
-        <footer class="footer">
-            <p>Created by Rod Serling | Data scraped from Wikipedia</p>
-        </footer>
+            <!-- Footer -->
+            <footer class="footer">
+                <p>Created by Rod Serling | Data scraped from Wikipedia</p>
+            </footer>
+        </div>
+
+        <!-- Thunderbirds Panel -->
+        <div id="thunderbirds-panel" class="series-panel" role="tabpanel">
+            <!-- Header Section -->
+            <header class="header">
+                <div class="header-content">
+                    <h1 class="title">Les Sentinelles de l'Air</h1>
+                    <p class="subtitle">Thunderbirds - 1964-1966</p>
+                    <div class="series-info">
+                        <span class="info-badge" id="thunderbirdsSeasons">2 Seasons</span>
+                        <span class="info-badge" id="thunderbirdsEpisodes">35 Episodes</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Search and Filter Section -->
+            <div class="controls">
+                <div class="search-container">
+                    <input
+                        type="text"
+                        id="thunderbirdsSearchInput"
+                        class="search-input"
+                        placeholder="Rechercher un épisode par titre, résumé, réalisateur ou scénariste..."
+                        aria-label="Search Thunderbirds episodes"
+                    >
+                </div>
+
+                <div class="filter-container">
+                    <label for="thunderbirdsSeasonFilter" class="filter-label">Saison:</label>
+                    <select id="thunderbirdsSeasonFilter" class="season-select">
+                        <option value="all">Toutes les saisons</option>
+                        <option value="0">Spécial</option>
+                        <option value="1">Saison 1</option>
+                        <option value="2">Saison 2</option>
+                    </select>
+
+                    <label for="thunderbirdsDirectorFilter" class="filter-label">Réalisateur:</label>
+                    <select id="thunderbirdsDirectorFilter" class="season-select">
+                        <option value="all">Tous les réalisateurs</option>
+                    </select>
+
+                    <label for="thunderbirdsWriterFilter" class="filter-label">Scénariste:</label>
+                    <select id="thunderbirdsWriterFilter" class="season-select">
+                        <option value="all">Tous les scénaristes</option>
+                    </select>
+
+                    <button id="thunderbirdsSortToggle" class="sort-button" aria-label="Toggle sort order">
+                        Trier: Plus ancien d'abord
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="stats-bar">
+                <span id="thunderbirdsDisplayCount">Affichage de 35 épisodes</span>
+            </div>
+
+            <!-- Episodes Grid -->
+            <main class="episodes-grid" id="thunderbirdsEpisodesGrid" role="main">
+                <!-- Episodes will be dynamically inserted here -->
+            </main>
+
+            <!-- Loading State -->
+            <div class="loading hidden" id="thunderbirdsLoading">
+                <div class="loading-spinner"></div>
+                <p>Chargement des épisodes des Sentinelles de l'Air...</p>
+            </div>
+
+            <!-- No Results State -->
+            <div class="no-results hidden" id="thunderbirdsNoResults">
+                <p>Aucun épisode trouvé correspondant à votre recherche.</p>
+            </div>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <p>Créé par Gerry et Sylvia Anderson | Vidéos depuis Internet Archive</p>
+            </footer>
+        </div>
     </div>
 
     <!-- Plot Modal -->

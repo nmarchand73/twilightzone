@@ -20,6 +20,158 @@
     --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.6);
     --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.8);
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Yellow theme (Twilight Zone) - default */
+    --color-accent-yellow: #f5f5dc;
+    --color-accent-dim-yellow: #d4af37;
+    --color-rgba-yellow: rgba(212, 175, 55, 1);
+    
+    /* Blue theme (Thunderbirds) */
+    --color-accent-blue: #b0e0e6;
+    --color-accent-dim-blue: #5ba3d4;
+    --color-rgba-blue: rgba(91, 163, 212, 1);
+    
+    /* RGBA variables for dynamic theme switching (default: yellow) */
+    --color-rgba-accent: rgba(212, 175, 55, 1);
+    --color-rgba-accent-alpha-1: rgba(212, 175, 55, 0.1);
+    --color-rgba-accent-alpha-2: rgba(212, 175, 55, 0.2);
+    --color-rgba-accent-alpha-3: rgba(212, 175, 55, 0.3);
+    --color-rgba-accent-alpha-4: rgba(212, 175, 55, 0.4);
+    --color-rgba-accent-alpha-5: rgba(212, 175, 55, 0.5);
+    --color-rgba-accent-alpha-6: rgba(212, 175, 55, 0.6);
+    --color-rgba-accent-alpha-7: rgba(212, 175, 55, 0.7);
+    --color-rgba-accent-alpha-8: rgba(212, 175, 55, 0.8);
+    --color-rgba-accent-alpha-9: rgba(212, 175, 55, 0.9);
+}
+
+/* Thunderbirds theme - Blue colors */
+body.thunderbirds-theme {
+    --color-accent: var(--color-accent-blue);
+    --color-accent-dim: var(--color-accent-dim-blue);
+    --color-rgba-accent: rgba(91, 163, 212, 1);
+    --color-rgba-accent-alpha-1: rgba(91, 163, 212, 0.1);
+    --color-rgba-accent-alpha-2: rgba(91, 163, 212, 0.2);
+    --color-rgba-accent-alpha-3: rgba(91, 163, 212, 0.3);
+    --color-rgba-accent-alpha-4: rgba(91, 163, 212, 0.4);
+    --color-rgba-accent-alpha-5: rgba(91, 163, 212, 0.5);
+    --color-rgba-accent-alpha-6: rgba(91, 163, 212, 0.6);
+    --color-rgba-accent-alpha-7: rgba(91, 163, 212, 0.7);
+    --color-rgba-accent-alpha-8: rgba(91, 163, 212, 0.8);
+    --color-rgba-accent-alpha-9: rgba(91, 163, 212, 0.9);
+}
+
+/* Replace rgba(212, 175, 55, ...) with blue for Thunderbirds theme */
+/* Override critical yellow colors with blue for Thunderbirds theme */
+body.thunderbirds-theme .title {
+    background: linear-gradient(
+        90deg,
+        #6bb6ff 0%,
+        #b0e0e6 20%,
+        #87ceeb 40%,
+        #6bb6ff 60%,
+        #a8d8ff 80%,
+        #6bb6ff 100%
+    ) !important;
+    background-size: 200% auto !important;
+    background-clip: text !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    animation: holographicShift 5s linear infinite !important;
+    filter: drop-shadow(0 0 20px rgba(107, 182, 255, 0.6))
+            drop-shadow(0 0 40px rgba(135, 206, 235, 0.4))
+            drop-shadow(0 0 60px rgba(168, 216, 255, 0.3)) !important;
+    /* Fallback color for browsers that don't support background-clip: text */
+    color: #b0e0e6 !important;
+    text-shadow: 0 0 30px rgba(107, 182, 255, 0.8) !important;
+}
+
+/* Replace box-shadow rgba colors for Thunderbirds */
+body.thunderbirds-theme .episode-card::before,
+body.thunderbirds-theme .episode-card::after,
+body.thunderbirds-theme .episode-badge-overall,
+body.thunderbirds-theme .watch-button,
+body.thunderbirds-theme .magic-cursor,
+body.thunderbirds-theme .magic-cursor-glow,
+body.thunderbirds-theme .magic-cursor-trail {
+    box-shadow: 0 0 20px rgba(91, 163, 212, 0.3),
+                0 0 40px rgba(91, 163, 212, 0.2),
+                0 0 60px rgba(91, 163, 212, 0.1) !important;
+}
+
+/* Replace background rgba colors */
+body.thunderbirds-theme .episode-badge-overall {
+    background: linear-gradient(135deg, #5ba3d4 0%, rgba(91, 163, 212, 0.7) 100%) !important;
+    border: 1px solid rgba(91, 163, 212, 0.5) !important;
+    box-shadow: 0 2px 4px rgba(91, 163, 212, 0.3) !important;
+}
+
+/* Replace text-shadow colors */
+body.thunderbirds-theme .watch-button {
+    text-shadow: 0 0 10px rgba(91, 163, 212, 0.8) !important;
+    box-shadow: 0 0 5px rgba(91, 163, 212, 0.3) !important;
+}
+
+body.thunderbirds-theme .watch-button:hover {
+    box-shadow: 0 0 15px rgba(91, 163, 212, 0.6) !important;
+}
+
+/* Replace border colors */
+body.thunderbirds-theme .episode-card:hover {
+    border-color: rgba(91, 163, 212, 0.5) !important;
+}
+
+/* Replace stats bar border */
+body.thunderbirds-theme .stats-bar {
+    border-left-color: #5ba3d4 !important;
+}
+
+/* Replace filter focus colors */
+body.thunderbirds-theme .season-select:focus,
+body.thunderbirds-theme .sort-button:focus {
+    border-color: #5ba3d4 !important;
+    box-shadow: 0 0 0 3px rgba(91, 163, 212, 0.1) !important;
+}
+
+/* Replace header underline gradient */
+body.thunderbirds-theme .header::after {
+    background: linear-gradient(90deg, transparent, #b0e0e6, transparent) !important;
+}
+
+/* Replace tab button active state */
+body.thunderbirds-theme .tab-button.active {
+    border-bottom-color: #5ba3d4 !important;
+    color: #b0e0e6 !important;
+}
+
+/* Replace effect tint yellow with blue */
+body.thunderbirds-theme .effect-tint-yellow {
+    filter: hue-rotate(180deg) saturate(1.2) !important;
+}
+
+/* Replace video modal colors */
+body.thunderbirds-theme .video-modal-crew {
+    color: #b0e0e6 !important;
+}
+
+body.thunderbirds-theme .video-modal-crew .detail-label {
+    color: #5ba3d4 !important;
+}
+
+/* Twilight Zone theme - Yellow colors (default) */
+body.twilight-zone-theme,
+body:not(.thunderbirds-theme) {
+    --color-accent: var(--color-accent-yellow);
+    --color-accent-dim: var(--color-accent-dim-yellow);
+    --color-rgba-accent: rgba(212, 175, 55, 1);
+    --color-rgba-accent-alpha-1: rgba(212, 175, 55, 0.1);
+    --color-rgba-accent-alpha-2: rgba(212, 175, 55, 0.2);
+    --color-rgba-accent-alpha-3: rgba(212, 175, 55, 0.3);
+    --color-rgba-accent-alpha-4: rgba(212, 175, 55, 0.4);
+    --color-rgba-accent-alpha-5: rgba(212, 175, 55, 0.5);
+    --color-rgba-accent-alpha-6: rgba(212, 175, 55, 0.6);
+    --color-rgba-accent-alpha-7: rgba(212, 175, 55, 0.7);
+    --color-rgba-accent-alpha-8: rgba(212, 175, 55, 0.8);
+    --color-rgba-accent-alpha-9: rgba(212, 175, 55, 0.9);
 }
 
 * {
@@ -106,6 +258,108 @@ body::after {
 .controls {
     transform-style: preserve-3d;
     will-change: transform, opacity;
+}
+
+/* ================================
+   Series Tabs Navigation
+   ================================ */
+
+.series-tabs {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    padding: 1.5rem 2rem;
+    background: rgba(0, 0, 0, 0.5);
+    border-bottom: 2px solid var(--color-border);
+    margin-bottom: 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.tab-button {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 2rem;
+    background: var(--color-bg-card);
+    border: 2px solid var(--color-border);
+    border-radius: 8px;
+    color: var(--color-text-secondary);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: var(--font-secondary);
+    position: relative;
+    overflow: hidden;
+}
+
+.tab-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.tab-button:hover::before {
+    left: 100%;
+}
+
+.tab-button:hover {
+    border-color: var(--color-accent-dim);
+    color: var(--color-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
+.tab-button.active {
+    background: linear-gradient(135deg, var(--color-bg-card) 0%, rgba(212, 175, 55, 0.1) 100%);
+    border-color: var(--color-accent-dim);
+    color: var(--color-accent);
+    box-shadow: 
+        0 4px 12px rgba(212, 175, 55, 0.4),
+        inset 0 0 20px rgba(212, 175, 55, 0.1);
+}
+
+.tab-icon {
+    font-size: 1.5rem;
+    filter: drop-shadow(0 0 4px rgba(212, 175, 55, 0.5));
+}
+
+.tab-button.active .tab-icon {
+    animation: iconPulse 2s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+    0%, 100% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 4px rgba(212, 175, 55, 0.5));
+    }
+    50% {
+        transform: scale(1.1);
+        filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.8));
+    }
+}
+
+.tab-text {
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+
+/* Series Panels */
+.series-panel {
+    display: none;
+}
+
+.series-panel.active {
+    display: block;
 }
 
 /* ================================
@@ -1203,12 +1457,45 @@ body::after {
     padding: 2rem;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.2s ease;
+    overflow: hidden;
 }
 
 .video-modal.active {
     opacity: 1;
     pointer-events: all;
+}
+
+/* Effet de particules/étoiles en arrière-plan lors de l'ouverture */
+.video-modal::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 70%);
+    opacity: 0;
+    pointer-events: none;
+    animation: starField 1s ease-out 0.3s forwards;
+}
+
+@keyframes starField {
+    0% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+    100% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
 }
 
 .video-modal-backdrop {
@@ -1220,6 +1507,28 @@ body::after {
     background: rgba(0, 0, 0, 0.95);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.video-modal.active .video-modal-backdrop {
+    opacity: 1;
+    animation: backdropPulse 0.8s ease;
+}
+
+@keyframes backdropPulse {
+    0% {
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(0px);
+    }
+    50% {
+        background: rgba(0, 0, 0, 0.98);
+        backdrop-filter: blur(15px);
+    }
+    100% {
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(10px);
+    }
 }
 
 .video-modal-content {
@@ -1234,15 +1543,95 @@ body::after {
         0 20px 60px rgba(0, 0, 0, 0.8),
         0 0 40px rgba(212, 175, 55, 0.3);
     overflow: visible;
-    transform: scale(0.9);
-    transition: transform 0.3s ease;
+    transform: scale(0.5) rotateY(90deg) translateZ(-200px);
+    opacity: 0;
+    filter: blur(20px) brightness(0.3);
+    transition: none;
     z-index: 10001;
     display: flex;
     flex-direction: column;
+    perspective: 1000px;
+    transform-style: preserve-3d;
 }
 
 .video-modal.active .video-modal-content {
-    transform: scale(1);
+    animation: videoModalAppear 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.video-modal.closing .video-modal-content {
+    animation: videoModalDisappear 0.5s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards;
+}
+
+@keyframes videoModalDisappear {
+    0% {
+        transform: scale(1) rotateY(0deg) translateZ(0px) rotateX(0deg);
+        opacity: 1;
+        filter: blur(0px) brightness(1);
+    }
+    50% {
+        transform: scale(0.8) rotateY(-20deg) translateZ(-100px) rotateX(10deg);
+        opacity: 0.5;
+        filter: blur(10px) brightness(0.5);
+    }
+    100% {
+        transform: scale(0.3) rotateY(-90deg) translateZ(-300px) rotateX(20deg);
+        opacity: 0;
+        filter: blur(30px) brightness(0.1);
+    }
+}
+
+.video-modal.closing .video-modal-backdrop {
+    animation: backdropFadeOut 0.5s ease forwards;
+}
+
+@keyframes backdropFadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes videoModalAppear {
+    0% {
+        transform: scale(0.3) rotateY(90deg) translateZ(-300px) rotateX(15deg);
+        opacity: 0;
+        filter: blur(30px) brightness(0.1) hue-rotate(180deg);
+        box-shadow: 
+            0 0 0 rgba(0, 0, 0, 0),
+            0 0 0 rgba(212, 175, 55, 0);
+    }
+    30% {
+        transform: scale(0.7) rotateY(45deg) translateZ(-100px) rotateX(5deg);
+        opacity: 0.5;
+        filter: blur(15px) brightness(0.5) hue-rotate(90deg);
+        box-shadow: 
+            0 10px 30px rgba(0, 0, 0, 0.5),
+            0 0 20px rgba(212, 175, 55, 0.2);
+    }
+    60% {
+        transform: scale(1.05) rotateY(-10deg) translateZ(50px) rotateX(-2deg);
+        opacity: 0.9;
+        filter: blur(5px) brightness(0.8) hue-rotate(20deg);
+        box-shadow: 
+            0 15px 50px rgba(0, 0, 0, 0.7),
+            0 0 30px rgba(212, 175, 55, 0.4);
+    }
+    80% {
+        transform: scale(0.98) rotateY(2deg) translateZ(0px) rotateX(0deg);
+        opacity: 1;
+        filter: blur(2px) brightness(0.95) hue-rotate(0deg);
+    }
+    100% {
+        transform: scale(1) rotateY(0deg) translateZ(0px) rotateX(0deg);
+        opacity: 1;
+        filter: blur(0px) brightness(1) hue-rotate(0deg);
+        box-shadow: 
+            0 20px 60px rgba(0, 0, 0, 0.8),
+            0 0 40px rgba(212, 175, 55, 0.3),
+            inset 0 0 60px rgba(212, 175, 55, 0.1);
+    }
 }
 
 .video-modal-close {
