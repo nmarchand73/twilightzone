@@ -1,0 +1,168 @@
+{
+  "series_title": "The New Avengers",
+  "series_title_french": "Chapeau melon et bottes de cuir",
+  "total_seasons": 2,
+  "total_episodes": 7,
+  "scrape_date": "2025-12-29T19:32:30.892301",
+  "seasons": [
+    {
+      "season_number": 1,
+      "url": "https://en.wikipedia.org/wiki/The_New_Avengers_(TV_series)",
+      "episodes": [
+        {
+          "season_number": 1,
+          "episode_number": 1,
+          "episode_number_overall": 1,
+          "title_french": "Le Château De Cartes",
+          "title_original": "House of Cards",
+          "air_date_france": "1976-11-05",
+          "air_date_usa": "1976-11-05",
+          "summary": "Steed, Purdey, and Gambit, aided by a flock of rabid female fans, rescue defector Professor Vasil from under the nose of Ivan Perov at an airport. Perov reactivates a group of 13 sleepers known as the House of Cards to avenge himself on the New Avengers and get Vasil back to Russia.",
+          "plot": "Steed, Purdey, and Gambit rescue defector Professor Vasil from under the nose of Ivan Perov at an airport, aided by a flock of rabid female fans. Perov reactivates a group of 13 sleepers known as the House of Cards in order to avenge himself on the New Avengers and get Vasil back to Russia. The team must stop Perov's revenge plot while protecting the defector.",
+          "episode_url": "https://en.wikipedia.org/wiki/The_New_Avengers_(TV_series)",
+          "cast": [
+            "Patrick Macnee",
+            "Joanna Lumley",
+            "Gareth Hunt"
+          ],
+          "director": null,
+          "writer": null,
+          "production_code": null,
+          "localPath": "/videos/Chapeau Melon Et Bottes De Cuir - The New Avengers/Season 1/Chapeau melon et bottes de cuir (1976) - 1X01 - Le Château De Cartes.mp4"
+        },
+        {
+          "season_number": 1,
+          "episode_number": 2,
+          "episode_number_overall": 2,
+          "title_french": "Un Chat Parmi Les Pigeons",
+          "title_original": "Cat Among the Pigeons",
+          "air_date_france": "1976-11-26",
+          "air_date_usa": "1976-11-26",
+          "summary": "The New Avengers investigate a series of assassinations linked to a mysterious organization.",
+          "plot": "The team investigates a series of assassinations linked to a mysterious organization. As they dig deeper, they discover a deadly conspiracy that threatens to destabilize the government.",
+          "episode_url": "https://en.wikipedia.org/wiki/The_New_Avengers_(TV_series)",
+          "cast": [
+            "Patrick Macnee",
+            "Joanna Lumley",
+            "Gareth Hunt"
+          ],
+          "director": null,
+          "writer": null,
+          "production_code": null,
+          "localPath": "/videos/Chapeau Melon Et Bottes De Cuir - The New Avengers/Season 1/Chapeau melon et bottes de cuir (1976) - 1X02 - Un Chat Parmi Les Pigeons.mp4"
+        },
+        {
+          "season_number": 1,
+          "episode_number": 3,
+          "episode_number_overall": 3,
+          "title_french": "La Grande Interrogation",
+          "title_original": "Sleeper",
+          "air_date_france": "1976-12-17",
+          "air_date_usa": "1976-12-17",
+          "summary": "The New Avengers are present at a demonstration of a new gas, S-95, that can knock out people instantaneously. Unfortunately, a criminal called Brady is also present, steals two canisters as well as the antidote, and puts the heart of London to sleep the next morning. Now Steed, Gambit, and Purdey are the only people left awake and able to stop the criminal gang from robbing all the banks of London.",
+          "plot": "The New Avengers are present at a demonstration of a new gas, S-95, that can knock out people instantaneously. Unfortunately, a criminal called Brady is also present, steals two canisters as well as the antidote, and puts the heart of London to sleep the next morning. Now Steed, Gambit, and Purdey are the only people left awake and able to stop the criminal gang from robbing all the banks of London. Unfortunately, Steed and Gambit have no way of contacting Purdey, and Purdey has trouble keeping her pajama bottoms up.",
+          "episode_url": "https://en.wikipedia.org/wiki/The_New_Avengers_(TV_series)",
+          "cast": [
+            "Patrick Macnee",
+            "Joanna Lumley",
+            "Gareth Hunt"
+          ],
+          "director": null,
+          "writer": null,
+          "production_code": null,
+          "localPath": "/videos/Chapeau Melon Et Bottes De Cuir - The New Avengers/Season 1/Chapeau melon et bottes de cuir (1976) - 1X03 - La Grande Interrogation.mp4"
+        },
+        {
+          "season_number": 1,
+          "episode_number": 4,
+          "episode_number_overall": 4,
+          "title_french": "Jeu à 3 Mains",
+          "title_original": "Gnaws",
+          "air_date_france": "1976-12-24",
+          "air_date_usa": "1976-12-24",
+          "summary": "The team investigates a series of mysterious deaths linked to a secret government project involving giant rats.",
+          "plot": "The New Avengers investigate a series of mysterious deaths linked to a secret government project. As they uncover the truth, they discover that the deaths are connected to experiments involving giant rats. The team must stop the threat before more lives are lost.",
+          "episode_url": "https://en.wikipedia.org/wiki/The_New_Avengers_(TV_series)",
+          "cast": [
+            "Patrick Macnee",
+            "Joanna Lumley",
+            "Gareth Hunt"
+          ],
+          "director": null,
+          "writer": null,
+          "production_code": null,
+          "localPath": "/videos/Chapeau Melon Et Bottes De Cuir - The New Avengers/Season 1/Chapeau melon et bottes de cuir (1976) - 1X04 - Jeu à 3 Mains.mp4"
+        }
+      ]
+    },
+    {
+      "season_number": 2,
+      "url": "https://en.wikipedia.org/wiki/The_New_Avengers_(TV_series)",
+      "episodes": [
+        {
+          "season_number": 2,
+          "episode_number": 1,
+          "episode_number_overall": 5,
+          "title_french": "Le Long Sommeil (1)",
+          "title_original": "K is for Kill: Part 1",
+          "air_date_france": "1977-11-04",
+          "air_date_usa": "1977-11-04",
+          "summary": "The team faces a threat from a group of Soviet sleeper agents who have been activated after decades of dormancy.",
+          "plot": "The New Avengers face a threat from a group of Soviet sleeper agents activated after decades of dormancy. The team must race against time to prevent the sleeper agents from executing their deadly mission. This is the first part of a two-part story.",
+          "episode_url": "https://en.wikipedia.org/wiki/The_New_Avengers_(TV_series)",
+          "cast": [
+            "Patrick Macnee",
+            "Joanna Lumley",
+            "Gareth Hunt"
+          ],
+          "director": null,
+          "writer": null,
+          "production_code": null,
+          "localPath": "/videos/Chapeau Melon Et Bottes De Cuir - The New Avengers/Season 2/Chapeau melon et bottes de cuir (1976) - 2X01 - Le Long Sommeil (1).mp4"
+        },
+        {
+          "season_number": 2,
+          "episode_number": 2,
+          "episode_number_overall": 6,
+          "title_french": "Le Long Sommeil (2)",
+          "title_original": "K is for Kill: Part 2",
+          "air_date_france": "1977-11-11",
+          "air_date_usa": "1977-11-11",
+          "summary": "Continuing from Part 1, the New Avengers work to prevent the sleeper agents from executing their deadly mission.",
+          "plot": "Continuing from Part 1, the New Avengers race against time to prevent the Soviet sleeper agents from executing their deadly mission. The team must stop a full-scale invasion and save countless lives in this conclusion to the two-part story.",
+          "episode_url": "https://en.wikipedia.org/wiki/The_New_Avengers_(TV_series)",
+          "cast": [
+            "Patrick Macnee",
+            "Joanna Lumley",
+            "Gareth Hunt"
+          ],
+          "director": null,
+          "writer": null,
+          "production_code": null,
+          "localPath": "/videos/Chapeau Melon Et Bottes De Cuir - The New Avengers/Season 2/Chapeau melon et bottes de cuir (1976) - 2X02 - Le Long Sommeil (2).mp4"
+        },
+        {
+          "season_number": 2,
+          "episode_number": 3,
+          "episode_number_overall": 7,
+          "title_french": "Complexe X41",
+          "title_original": "Complex",
+          "air_date_france": "1977-11-18",
+          "air_date_usa": "1977-11-18",
+          "summary": "The team uncovers a secret enemy base with plans to destabilize international relations.",
+          "plot": "The New Avengers investigate a mysterious complex known as X41. As they dig deeper, they uncover a secret enemy base with plans to destabilize international relations. The team must infiltrate the complex and stop the threat before it's too late.",
+          "episode_url": "https://en.wikipedia.org/wiki/The_New_Avengers_(TV_series)",
+          "cast": [
+            "Patrick Macnee",
+            "Joanna Lumley",
+            "Gareth Hunt"
+          ],
+          "director": null,
+          "writer": null,
+          "production_code": null,
+          "localPath": "/videos/Chapeau Melon Et Bottes De Cuir - The New Avengers/Season 2/Chapeau melon et bottes de cuir (1976) - 2X03 - Complexe X41.mp4"
+        }
+      ]
+    }
+  ]
+}

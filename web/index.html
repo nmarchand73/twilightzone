@@ -21,6 +21,10 @@
                 <span class="tab-icon">✈️</span>
                 <span class="tab-text">Les Sentinelles de l'Air</span>
             </button>
+            <button class="tab-button" data-series="new-avengers" role="tab" aria-selected="false" aria-controls="new-avengers-panel">
+                <span class="tab-icon">🎩</span>
+                <span class="tab-text">Chapeau Melon</span>
+            </button>
         </nav>
 
         <!-- Twilight Zone Panel -->
@@ -178,6 +182,83 @@
             <!-- Footer -->
             <footer class="footer">
                 <p>Créé par Gerry et Sylvia Anderson | Vidéos depuis Internet Archive</p>
+            </footer>
+        </div>
+
+        <!-- New Avengers Panel -->
+        <div id="new-avengers-panel" class="series-panel" role="tabpanel">
+            <!-- Header Section -->
+            <header class="header">
+                <div class="header-content">
+                    <h1 class="title">Chapeau Melon et Bottes de Cuir</h1>
+                    <p class="subtitle">The New Avengers - 1976-1977</p>
+                    <div class="series-info">
+                        <span class="info-badge" id="newAvengersSeasons">2 Seasons</span>
+                        <span class="info-badge" id="newAvengersEpisodes">7 Episodes</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Search and Filter Section -->
+            <div class="controls">
+                <div class="search-container">
+                    <input
+                        type="text"
+                        id="newAvengersSearchInput"
+                        class="search-input"
+                        placeholder="Rechercher un épisode par titre, résumé, réalisateur ou scénariste..."
+                        aria-label="Search New Avengers episodes"
+                    >
+                </div>
+
+                <div class="filter-container">
+                    <label for="newAvengersSeasonFilter" class="filter-label">Saison:</label>
+                    <select id="newAvengersSeasonFilter" class="season-select">
+                        <option value="all">Toutes les saisons</option>
+                        <option value="1">Saison 1</option>
+                        <option value="2">Saison 2</option>
+                    </select>
+
+                    <label for="newAvengersDirectorFilter" class="filter-label">Réalisateur:</label>
+                    <select id="newAvengersDirectorFilter" class="season-select">
+                        <option value="all">Tous les réalisateurs</option>
+                    </select>
+
+                    <label for="newAvengersWriterFilter" class="filter-label">Scénariste:</label>
+                    <select id="newAvengersWriterFilter" class="season-select">
+                        <option value="all">Tous les scénaristes</option>
+                    </select>
+
+                    <button id="newAvengersSortToggle" class="sort-button" aria-label="Toggle sort order">
+                        Trier: Plus ancien d'abord
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="stats-bar">
+                <span id="newAvengersDisplayCount">Affichage de 7 épisodes</span>
+            </div>
+
+            <!-- Episodes Grid -->
+            <main class="episodes-grid" id="newAvengersEpisodesGrid" role="main">
+                <!-- Episodes will be dynamically inserted here -->
+            </main>
+
+            <!-- Loading State -->
+            <div class="loading hidden" id="newAvengersLoading">
+                <div class="loading-spinner"></div>
+                <p>Chargement des épisodes de Chapeau Melon et Bottes de Cuir...</p>
+            </div>
+
+            <!-- No Results State -->
+            <div class="no-results hidden" id="newAvengersNoResults">
+                <p>Aucun épisode trouvé correspondant à votre recherche.</p>
+            </div>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <p>Créé par Brian Clemens | The New Avengers - 1976-1977</p>
             </footer>
         </div>
     </div>

@@ -26,6 +26,13 @@ class TwilightZoneApp {
         this.thunderbirdsCurrentWriter = 'all';
         this.thunderbirdsSearchTerm = '';
         this.thunderbirdsSortAscending = true;
+        this.newAvengersEpisodes = []; // New Avengers episodes data
+        this.newAvengersFiltered = []; // Filtered New Avengers episodes
+        this.newAvengersCurrentSeason = 'all';
+        this.newAvengersCurrentDirector = 'all';
+        this.newAvengersCurrentWriter = 'all';
+        this.newAvengersSearchTerm = '';
+        this.newAvengersSortAscending = true;
 
         // Table de correspondance entre épisodes et noms de fichiers vidéo réels
         this.videoFileMap = {
@@ -606,9 +613,9 @@ class TwilightZoneApp {
         // Set content
         if (episode.series === 'thunderbirds') {
             if (episode.season_number === 0) {
-                badge.textContent = `Épisode spécial`;
+                badge.textContent = `Special Episode`;
             } else {
-                badge.textContent = `Épisode ${episode.episode_number} • Saison ${episode.season_number}`;
+                badge.textContent = `Episode ${episode.episode_number} • Season ${episode.season_number}`;
             }
         } else {
             badge.textContent = `Episode ${episode.episode_number_overall} • Season ${episode.season_number}`;
@@ -623,13 +630,16 @@ class TwilightZoneApp {
             titleFrench.style.display = 'none';
         }
         
-        // Afficher le réalisateur et l'écrivain
+        // Afficher le réalisateur, l'écrivain et le cast
         const crewInfo = [];
-        if (episode.director && episode.director.trim()) {
+        if (episode.director && episode.director.trim() && episode.director !== 'N/A' && episode.director !== null) {
             crewInfo.push(`Directed by ${this.escapeHtml(episode.director)}`);
         }
-        if (episode.writer && episode.writer.trim()) {
+        if (episode.writer && episode.writer.trim() && episode.writer !== 'N/A' && episode.writer !== null) {
             crewInfo.push(`Written by ${this.escapeHtml(episode.writer)}`);
+        }
+        if (episode.cast && Array.isArray(episode.cast) && episode.cast.length > 0) {
+            crewInfo.push(`Cast: ${this.escapeHtml(episode.cast.join(', '))}`);
         }
         
         if (crewInfo.length > 0) {
@@ -642,9 +652,22 @@ class TwilightZoneApp {
         // Set video source
         const videoPath = this.getVideoFilePath(episode);
         
+        // Détecter le type MIME selon l'extension du fichier
+        let videoType = 'video/mp4'; // Par défaut
+        const pathLower = videoPath.toLowerCase();
+        if (pathLower.endsWith('.avi')) {
+            videoType = 'video/x-msvideo';
+        } else if (pathLower.endsWith('.webm')) {
+            videoType = 'video/webm';
+        } else if (pathLower.endsWith('.ogg') || pathLower.endsWith('.ogv')) {
+            videoType = 'video/ogg';
+        } else if (pathLower.endsWith('.mkv')) {
+            videoType = 'video/x-matroska';
+        }
+        
         // Toutes les vidéos passent maintenant par le serveur (local ou proxy archive)
         videoSource.src = videoPath;
-        videoSource.type = 'video/mp4';
+        videoSource.type = videoType;
         videoPlayer.crossOrigin = null; // Pas besoin de CORS car on passe par notre serveur
         
         videoPlayer.load();
@@ -876,7 +899,8 @@ class TwilightZoneApp {
 
             await Promise.all([
                 this.loadData(),
-                this.loadThunderbirdsData()
+                this.loadThunderbirdsData(),
+                this.loadNewAvengersData()
             ]);
             this.setupEventListeners();
             this.setupTabNavigation();
@@ -926,6 +950,42 @@ class TwilightZoneApp {
         console.warn('Using fallback Thunderbirds data');
         this.thunderbirdsEpisodes = [];
         this.thunderbirdsFiltered = [];
+    }
+
+    async loadNewAvengersData() {
+        try {
+            const response = await fetch('/data/new_avengers_episodes.json');
+            if (!response.ok) {
+                throw new Error(`Failed to load New Avengers data: ${response.statusText}`);
+            }
+            const data = await response.json();
+            
+            // Flatten episodes from all seasons
+            this.newAvengersEpisodes = [];
+            if (data.seasons) {
+                data.seasons.forEach(season => {
+                    this.newAvengersEpisodes.push(...season.episodes);
+                });
+            }
+            
+            // Update header info
+            const seasonsBadge = document.getElementById('newAvengersSeasons');
+            const episodesBadge = document.getElementById('newAvengersEpisodes');
+            if (seasonsBadge) seasonsBadge.textContent = `${data.total_seasons} Seasons`;
+            if (episodesBadge) episodesBadge.textContent = `${data.total_episodes} Episodes`;
+            
+            this.newAvengersFiltered = [...this.newAvengersEpisodes];
+            
+            // Populate filters after loading data
+            this.populateNewAvengersFilters();
+            this.applyNewAvengersFilters();
+            
+            console.log(`Loaded ${this.newAvengersEpisodes.length} New Avengers episodes from JSON`);
+        } catch (error) {
+            console.error('Error loading New Avengers data:', error);
+            this.newAvengersEpisodes = [];
+            this.newAvengersFiltered = [];
+        }
     }
 
     getThunderbirdsFrenchTitle(episodeNum) {
@@ -1005,6 +1065,9 @@ class TwilightZoneApp {
         } else if (series === 'thunderbirds') {
             document.getElementById('thunderbirds-panel').classList.add('active');
             this.applyThunderbirdsFilters();
+        } else if (series === 'new-avengers') {
+            document.getElementById('new-avengers-panel').classList.add('active');
+            this.applyNewAvengersFilters();
         }
     }
 
@@ -1012,11 +1075,13 @@ class TwilightZoneApp {
         const body = document.body;
         
         // Retirer tous les thèmes
-        body.classList.remove('twilight-zone-theme', 'thunderbirds-theme');
+        body.classList.remove('twilight-zone-theme', 'thunderbirds-theme', 'new-avengers-theme');
         
         // Appliquer le thème approprié
         if (series === 'thunderbirds') {
             body.classList.add('thunderbirds-theme');
+        } else if (series === 'new-avengers') {
+            body.classList.add('new-avengers-theme');
         } else {
             body.classList.add('twilight-zone-theme');
         }
@@ -1060,7 +1125,7 @@ class TwilightZoneApp {
         const episodeNum = episode.season_number === 0 ? 0 : episode.episode_number;
         const totalEpisodes = 32; // 32 épisodes TV officiels (sans l'épisode 0 spécial)
         
-        card.setAttribute('aria-label', `Épisode ${episode.episode_number_overall}: ${episode.title_original}`);
+        card.setAttribute('aria-label', `Episode ${episode.episode_number_overall}: ${episode.title_original}`);
 
         // Apply random strange effects to each episode (same as Twilight Zone)
         this.applyRandomEffects(card, episode);
@@ -1077,7 +1142,7 @@ class TwilightZoneApp {
         // Format badge text based on episode type
         let badgeText = '';
         if (episode.season_number === 0) {
-            badgeText = 'Spécial';
+            badgeText = 'Special';
         } else {
             badgeText = `S${episode.season_number}E${episodeNum}`;
         }
@@ -1086,11 +1151,11 @@ class TwilightZoneApp {
             <div class="episode-header">
                 <div class="episode-meta">
                     <span class="episode-badge episode-badge-season">${badgeText}</span>
-                    <span class="episode-badge episode-badge-overall" title="Épisode ${episode.episode_number_overall} sur ${totalEpisodes + 1}">#${episode.episode_number_overall}</span>
+                    <span class="episode-badge episode-badge-overall" title="Episode ${episode.episode_number_overall} of ${totalEpisodes + 1}">#${episode.episode_number_overall}</span>
                 </div>
                 <h2 class="episode-title">${this.escapeHtml(episode.title_original)}</h2>
                 ${episode.title_french ? `<p class="episode-title-french">${this.escapeHtml(episode.title_french)}</p>` : ''}
-                ${episode.air_date || episode.air_date_usa ? `<p class="episode-date">Diffusé: ${this.escapeHtml(episode.air_date || episode.air_date_usa)}</p>` : ''}
+                ${episode.air_date || episode.air_date_usa ? `<p class="episode-date">Aired: ${this.escapeHtml(episode.air_date || episode.air_date_usa)}</p>` : ''}
             </div>
 
             ${episode.summary ? `<p class="episode-summary">${this.escapeHtml(episode.summary)}</p>` : ''}
@@ -1098,27 +1163,27 @@ class TwilightZoneApp {
             <div class="episode-details">
                 ${episode.director && episode.director !== 'N/A' ? `
                     <div class="detail-row">
-                        <span class="detail-label">Réalisateur:</span>
+                        <span class="detail-label">Director:</span>
                         <span class="detail-value">${this.escapeHtml(episode.director)}</span>
                     </div>
                 ` : ''}
                 ${episode.writer && episode.writer !== 'N/A' ? `
                     <div class="detail-row">
-                        <span class="detail-label">Scénariste:</span>
+                        <span class="detail-label">Writer:</span>
                         <span class="detail-value">${this.escapeHtml(episode.writer)}</span>
                     </div>
                 ` : ''}
                 ${episode.type ? `
                     <div class="detail-row">
                         <span class="detail-label">Type:</span>
-                        <span class="detail-value">${episode.type === 'audio_special' ? 'Épisode audio spécial' : episode.type === 'clip_show' ? 'Clip show' : this.escapeHtml(episode.type)}</span>
+                        <span class="detail-value">${episode.type === 'audio_special' ? 'Special audio episode' : episode.type === 'clip_show' ? 'Clip show' : this.escapeHtml(episode.type)}</span>
                     </div>
                 ` : ''}
             </div>
 
             <div class="episode-actions">
-                <button class="watch-button" aria-label="Regarder l'épisode">
-                    ▶ Regarder l'épisode
+                <button class="watch-button" aria-label="Watch episode">
+                    ▶ Watch Episode
                 </button>
             </div>
         `;
@@ -1417,6 +1482,53 @@ class TwilightZoneApp {
                 this.applyThunderbirdsFilters();
             });
         }
+
+        // New Avengers search input
+        const newAvengersSearchInput = document.getElementById('newAvengersSearchInput');
+        if (newAvengersSearchInput) {
+            newAvengersSearchInput.addEventListener('input', (e) => {
+                this.newAvengersSearchTerm = e.target.value.toLowerCase();
+                this.applyNewAvengersFilters();
+            });
+        }
+
+        // New Avengers season filter
+        const newAvengersSeasonFilter = document.getElementById('newAvengersSeasonFilter');
+        if (newAvengersSeasonFilter) {
+            newAvengersSeasonFilter.addEventListener('change', (e) => {
+                this.newAvengersCurrentSeason = e.target.value;
+                this.applyNewAvengersFilters();
+            });
+        }
+
+        // New Avengers director filter
+        const newAvengersDirectorFilter = document.getElementById('newAvengersDirectorFilter');
+        if (newAvengersDirectorFilter) {
+            newAvengersDirectorFilter.addEventListener('change', (e) => {
+                this.newAvengersCurrentDirector = e.target.value;
+                this.applyNewAvengersFilters();
+            });
+        }
+
+        // New Avengers writer filter
+        const newAvengersWriterFilter = document.getElementById('newAvengersWriterFilter');
+        if (newAvengersWriterFilter) {
+            newAvengersWriterFilter.addEventListener('change', (e) => {
+                this.newAvengersCurrentWriter = e.target.value;
+                this.applyNewAvengersFilters();
+            });
+        }
+
+        // New Avengers sort toggle
+        const newAvengersSortToggle = document.getElementById('newAvengersSortToggle');
+        if (newAvengersSortToggle) {
+            newAvengersSortToggle.textContent = this.newAvengersSortAscending ? 'Trier: Plus ancien d\'abord' : 'Trier: Plus récent d\'abord';
+            newAvengersSortToggle.addEventListener('click', () => {
+                this.newAvengersSortAscending = !this.newAvengersSortAscending;
+                newAvengersSortToggle.textContent = this.newAvengersSortAscending ? 'Trier: Plus ancien d\'abord' : 'Trier: Plus récent d\'abord';
+                this.applyNewAvengersFilters();
+            });
+        }
     }
 
     populateThunderbirdsFilters() {
@@ -1569,6 +1681,224 @@ class TwilightZoneApp {
 
         this.thunderbirdsFiltered = filtered;
         this.renderThunderbirdsEpisodes();
+    }
+
+    populateNewAvengersFilters() {
+        this.populateNewAvengersDirectorFilter();
+        this.populateNewAvengersWriterFilter();
+    }
+
+    populateNewAvengersDirectorFilter() {
+        const directorFilter = document.getElementById('newAvengersDirectorFilter');
+        if (!directorFilter) return;
+
+        while (directorFilter.children.length > 1) {
+            directorFilter.removeChild(directorFilter.lastChild);
+        }
+
+        const directors = new Set();
+        this.newAvengersEpisodes.forEach(ep => {
+            if (ep.director && ep.director.trim() && ep.director !== 'N/A') {
+                directors.add(ep.director.trim());
+            }
+        });
+
+        const sortedDirectors = Array.from(directors).sort();
+        sortedDirectors.forEach(director => {
+            const option = document.createElement('option');
+            option.value = director;
+            option.textContent = director;
+            directorFilter.appendChild(option);
+        });
+    }
+
+    populateNewAvengersWriterFilter() {
+        const writerFilter = document.getElementById('newAvengersWriterFilter');
+        if (!writerFilter) return;
+
+        while (writerFilter.children.length > 1) {
+            writerFilter.removeChild(writerFilter.lastChild);
+        }
+
+        const writers = new Set();
+        this.newAvengersEpisodes.forEach(ep => {
+            if (ep.writer && ep.writer.trim() && ep.writer !== 'N/A') {
+                writers.add(ep.writer.trim());
+            }
+        });
+
+        const sortedWriters = Array.from(writers).sort();
+        sortedWriters.forEach(writer => {
+            const option = document.createElement('option');
+            option.value = writer;
+            option.textContent = writer;
+            writerFilter.appendChild(option);
+        });
+    }
+
+    applyNewAvengersFilters() {
+        let filtered = [...this.newAvengersEpisodes];
+
+        if (this.newAvengersCurrentSeason !== 'all') {
+            const seasonNum = parseInt(this.newAvengersCurrentSeason);
+            filtered = filtered.filter(ep => ep.season_number === seasonNum);
+        }
+
+        if (this.newAvengersCurrentDirector !== 'all') {
+            filtered = filtered.filter(ep => 
+                ep.director && ep.director.trim() === this.newAvengersCurrentDirector
+            );
+        }
+
+        if (this.newAvengersCurrentWriter !== 'all') {
+            filtered = filtered.filter(ep => 
+                ep.writer && ep.writer.trim() === this.newAvengersCurrentWriter
+            );
+        }
+
+        if (this.newAvengersSearchTerm) {
+            filtered = filtered.filter(ep => {
+                const searchableText = [
+                    ep.title_original,
+                    ep.title_french,
+                    ep.summary,
+                    ep.plot,
+                    ep.director,
+                    ep.writer,
+                    ep.production_code,
+                    ep.cast && Array.isArray(ep.cast) ? ep.cast.join(' ') : ''
+                ].filter(Boolean).join(' ').toLowerCase();
+                return searchableText.includes(this.newAvengersSearchTerm);
+            });
+        }
+
+        filtered.sort((a, b) => {
+            const comparison = a.episode_number_overall - b.episode_number_overall;
+            return this.newAvengersSortAscending ? comparison : -comparison;
+        });
+
+        this.newAvengersFiltered = filtered;
+        this.renderNewAvengersEpisodes();
+    }
+
+    renderNewAvengersEpisodes() {
+        const grid = document.getElementById('newAvengersEpisodesGrid');
+        const loading = document.getElementById('newAvengersLoading');
+        const noResults = document.getElementById('newAvengersNoResults');
+        const displayCount = document.getElementById('newAvengersDisplayCount');
+
+        if (!grid) return;
+
+        grid.innerHTML = '';
+        loading.classList.add('hidden');
+
+        displayCount.textContent = `Affichage de ${this.newAvengersFiltered.length} épisode${this.newAvengersFiltered.length !== 1 ? 's' : ''}`;
+
+        if (this.newAvengersFiltered.length === 0) {
+            noResults.classList.remove('hidden');
+            return;
+        } else {
+            noResults.classList.add('hidden');
+        }
+
+        this.newAvengersFiltered.forEach(episode => {
+            const card = this.createNewAvengersEpisodeCard(episode);
+            grid.appendChild(card);
+        });
+    }
+
+    createNewAvengersEpisodeCard(episode) {
+        const card = document.createElement('article');
+        card.className = 'episode-card';
+        card.setAttribute('role', 'article');
+        
+        card.setAttribute('aria-label', `Episode ${episode.episode_number_overall}: ${episode.title_original}`);
+
+        this.applyRandomEffects(card, episode);
+
+        card._episodeData = episode;
+        card._shaderData = null;
+
+        if (this.intersectionObserver) {
+            this.intersectionObserver.observe(card);
+        }
+
+        const badgeText = `S${episode.season_number}E${episode.episode_number}`;
+        const hasPlot = episode.plot && episode.plot.trim().length > 0;
+        const hasCast = episode.cast && Array.isArray(episode.cast) && episode.cast.length > 0;
+
+        card.innerHTML = `
+            <div class="episode-header">
+                <div class="episode-meta">
+                    <span class="episode-badge episode-badge-season">${badgeText}</span>
+                    <span class="episode-badge episode-badge-overall">#${episode.episode_number_overall}</span>
+                </div>
+                <h2 class="episode-title">${this.escapeHtml(episode.title_original)}</h2>
+                ${episode.title_french && episode.title_french !== episode.title_original ? `<p class="episode-title-french">${this.escapeHtml(episode.title_french)}</p>` : ''}
+                ${episode.air_date_usa || episode.air_date_france ? `<p class="episode-date">Aired: ${this.escapeHtml(episode.air_date_usa || episode.air_date_france)}</p>` : ''}
+            </div>
+
+            ${episode.summary ? `<p class="episode-summary">${this.escapeHtml(episode.summary)}</p>` : ''}
+
+            <div class="episode-details">
+                ${episode.director && episode.director !== 'N/A' && episode.director !== null ? `
+                    <div class="detail-row">
+                        <span class="detail-label">Director:</span>
+                        <span class="detail-value">${this.escapeHtml(episode.director)}</span>
+                    </div>
+                ` : ''}
+                ${episode.writer && episode.writer !== 'N/A' && episode.writer !== null ? `
+                    <div class="detail-row">
+                        <span class="detail-label">Writer:</span>
+                        <span class="detail-value">${this.escapeHtml(episode.writer)}</span>
+                    </div>
+                ` : ''}
+                ${episode.production_code && episode.production_code !== null ? `
+                    <div class="detail-row">
+                        <span class="detail-label">Production:</span>
+                        <span class="detail-value">${this.escapeHtml(episode.production_code)}</span>
+                    </div>
+                ` : ''}
+                ${hasCast ? `
+                    <div class="detail-row">
+                        <span class="detail-label">Cast:</span>
+                        <span class="detail-value">${this.escapeHtml(episode.cast.join(', '))}</span>
+                    </div>
+                ` : ''}
+            </div>
+
+            <div class="episode-actions">
+                ${hasPlot ? `
+                    <button class="expand-button" aria-expanded="false">
+                        Read Full Plot
+                    </button>
+                ` : ''}
+                <button class="watch-button" aria-label="Watch episode">
+                    ▶ Watch Episode
+                </button>
+            </div>
+        `;
+
+        // Add click handler for plot button
+        if (hasPlot) {
+            const expandButton = card.querySelector('.expand-button');
+            if (expandButton) {
+                expandButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.openPlotModal(episode);
+                });
+            }
+        }
+
+        const watchButton = card.querySelector('.watch-button');
+        if (watchButton) {
+            watchButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.openVideoModal(episode);
+            });
+        }
+
+        return card;
     }
 
     applyFilters() {
