@@ -23,7 +23,8 @@
           "director": "Robert Stevens",
           "writer": "Rod Serling",
           "production_code": "173-3601",
-          "cinematographer": "Joseph La Shelle"
+          "cinematographer": "Joseph La Shelle",
+          "localPath": "/videos/twilight-zone/S01_E01_Solitude.mp4"
         },
         {
           "season_number": 1,
@@ -40,7 +41,8 @@
           "director": "Robert Parrish",
           "writer": "Rod Serling",
           "production_code": "173-3608",
-          "cinematographer": "George T. Clemens"
+          "cinematographer": "George T. Clemens",
+          "localPath": "/videos/twilight-zone/S01_E02_Pour les anges.mp4"
         },
         {
           "season_number": 1,
@@ -57,7 +59,8 @@
           "director": "Allen Reisner",
           "writer": "Rod Serling",
           "production_code": "173-3609",
-          "cinematographer": "George T. Clemens"
+          "cinematographer": "George T. Clemens",
+          "localPath": "/videos/twilight-zone/S01_E03_La Seconde Chance.mp4"
         },
         {
           "season_number": 1,
@@ -73,7 +76,8 @@
           "cast": [],
           "director": "Mitchell Leisen",
           "writer": "Rod Serling",
-          "production_code": "173-3610"
+          "production_code": "173-3610",
+          "localPath": "/videos/twilight-zone/S01_E04_Du succès au déclin.mp4"
         },
         {
           "season_number": 1,
@@ -89,7 +93,8 @@
           "cast": [],
           "director": "Robert Stevens",
           "writer": "Rod Serling",
-          "production_code": "173-3605"
+          "production_code": "173-3605",
+          "localPath": "/videos/twilight-zone/S01_E05_Souvenir d'enfance.mp4"
         },
         {
           "season_number": 1,
@@ -105,7 +110,8 @@
           "cast": [],
           "director": "Mitchell Leisen",
           "writer": "Rod Serling",
-          "production_code": "173-3603"
+          "production_code": "173-3603",
+          "localPath": "/videos/twilight-zone/S01_E06_Immortel, moi jamais.mp4"
         },
         {
           "season_number": 1,
@@ -121,7 +127,8 @@
           "cast": [],
           "director": "Jack Smight",
           "writer": "Rod Serling",
-          "production_code": "173-3602"
+          "production_code": "173-3602",
+          "localPath": "/videos/twilight-zone/S01_E07_Le Solitaire.mp4"
         },
         {
           "season_number": 1,
@@ -137,7 +144,8 @@
           "cast": [],
           "director": "John Brahm",
           "writer": "Based on a short story by : Lynn VenableTeleplay by : Rod Serling",
-          "production_code": "173-3614"
+          "production_code": "173-3614",
+          "localPath": "/videos/twilight-zone/S01_E08_Question de temps.mp4"
         },
         {
           "season_number": 1,
@@ -153,7 +161,8 @@
           "cast": [],
           "director": "Robert Florey",
           "writer": "Charles Beaumont",
-          "production_code": "173-3616"
+          "production_code": "173-3616",
+          "localPath": "/videos/twilight-zone/S01_E09_La Poursuite du rêve.mp4"
         },
         {
           "season_number": 1,
@@ -169,7 +178,8 @@
           "cast": [],
           "director": "John Brahm",
           "writer": "Rod Serling",
-          "production_code": "173-3604"
+          "production_code": "173-3604",
+          "localPath": "/videos/twilight-zone/S01_E10_La Nuit du jugement.mp4"
         },
         {
           "season_number": 1,
@@ -186,7 +196,8 @@
           "director": "Douglas Heyes",
           "writer": "Based on a short story by : Richard MathesonTeleplay by : Rod Serling",
           "production_code": "173-3611",
-          "cinematographer": "George T. Clemens"
+          "cinematographer": "George T. Clemens",
+          "localPath": "/videos/twilight-zone/S01_E11_Les Trois Fantômes.mp4"
         },
         {
           "season_number": 1,
@@ -202,7 +213,8 @@
           "cast": [],
           "director": "Alvin Ganzer",
           "writer": "Based on a short story by : Lewis PadgettTeleplay by : Rod Serling",
-          "production_code": "173-3622"
+          "production_code": "173-3622",
+          "localPath": "/videos/twilight-zone/S01_E12_Je sais ce qu'il vous faut.mp4"
         },
         {
           "season_number": 1,
@@ -218,7 +230,8 @@
           "cast": [],
           "director": "John Brahm",
           "writer": "Based on a short story by : George Clayton JohnsonTeleplay by : Rod Serling",
-          "production_code": "173-3618"
+          "production_code": "173-3618",
+          "localPath": "/videos/twilight-zone/S01_E13_Quatre d'entre nous sont mourants.mp4"
         },
         {
           "season_number": 1,
@@ -234,7 +247,8 @@
           "cast": [],
           "director": "Richard L. Bare",
           "writer": "Based on a short story by : Richard MathesonTeleplay by : Rod Serling",
-          "production_code": "173-3615"
+          "production_code": "173-3615",
+          "localPath": "/videos/twilight-zone/S01_E14_Troisième à partir du Soleil.mp4"
         },
         {
           "season_number": 1,
@@ -250,7 +264,8 @@
           "cast": [],
           "director": "Stuart Rosenberg",
           "writer": "Based on a story by : Madelon ChampionTeleplay by : Rod Serling",
-          "production_code": "173-3626"
+          "production_code": "173-3626",
+          "localPath": "/videos/twilight-zone/S01_E15_La Flèche dans le ciel.mp4"
         },
         {
           "season_number": 1,
@@ -266,7 +281,8 @@
           "cast": [],
           "director": "Alvin Ganzer",
           "writer": "Based on the radio play by : Lucille FletcherTeleplay by : Rod Serling",
-          "production_code": "173-3612"
+          "production_code": "173-3612",
+          "localPath": "/videos/twilight-zone/S01_E16_L'Auto-stoppeur.mp4"
         },
         {
           "season_number": 1,
@@ -282,7 +298,8 @@
           "cast": [],
           "director": "Robert Florey",
           "writer": "Rod Serling",
-          "production_code": "173-3627"
+          "production_code": "173-3627",
+          "localPath": "/videos/twilight-zone/S01_E17_La Fièvre du jeu.mp4"
         },
         {
           "season_number": 1,
@@ -298,7 +315,8 @@
           "cast": [],
           "director": "William F. Claxton",
           "writer": "Richard Matheson",
-          "production_code": "173-3607"
+          "production_code": "173-3607",
+          "localPath": "/videos/twilight-zone/S01_E18_Le Lâche.mp4"
         },
         {
           "season_number": 1,
@@ -314,7 +332,8 @@
           "cast": [],
           "director": "Richard L. Bare",
           "writer": "Rod Serling",
-          "production_code": "173-3619"
+          "production_code": "173-3619",
+          "localPath": "/videos/twilight-zone/S01_E19_Infanterie Platon.mp4"
         },
         {
           "season_number": 1,
@@ -330,7 +349,8 @@
           "cast": [],
           "director": "Douglas Heyes",
           "writer": "Charles Beaumont",
-          "production_code": "173-3625"
+          "production_code": "173-3625",
+          "localPath": "/videos/twilight-zone/S01_E20_Requiem.mp4"
         },
         {
           "season_number": 1,
@@ -346,7 +366,8 @@
           "cast": [],
           "director": "John Brahm",
           "writer": "Rod Serling",
-          "production_code": "173-3623"
+          "production_code": "173-3623",
+          "localPath": "/videos/twilight-zone/S01_E21_Image dans un miroir.mp4"
         },
         {
           "season_number": 1,
@@ -362,7 +383,8 @@
           "cast": [],
           "director": "Ronald Winston",
           "writer": "Rod Serling",
-          "production_code": "173-3620"
+          "production_code": "173-3620",
+          "localPath": "/videos/twilight-zone/S01_E22_Les Monstres de Maple Street.mp4"
         },
         {
           "season_number": 1,
@@ -378,7 +400,8 @@
           "cast": [],
           "director": "Ted Post",
           "writer": "Richard Matheson",
-          "production_code": "173-3624"
+          "production_code": "173-3624",
+          "localPath": "/videos/twilight-zone/S01_E23_Un monde différent.mp4"
         },
         {
           "season_number": 1,
@@ -394,7 +417,8 @@
           "cast": [],
           "director": "Anton Leader",
           "writer": "Charles Beaumont",
-          "production_code": "173-3621"
+          "production_code": "173-3621",
+          "localPath": "/videos/twilight-zone/S01_E24_Longue vie Walter Jameson.mp4"
         },
         {
           "season_number": 1,
@@ -410,7 +434,8 @@
           "cast": [],
           "director": "Mitchell Leisen",
           "writer": "Based on a short story by : Paul W. FairmanTeleplay by : Rod Serling",
-          "production_code": "173-3613"
+          "production_code": "173-3613",
+          "localPath": "/videos/twilight-zone/S01_E25_Tous les gens sont partout semblables.mp4"
         },
         {
           "season_number": 1,
@@ -426,7 +451,8 @@
           "cast": [],
           "director": "David Orrick McDearmon",
           "writer": "Based on a short story by : George Clayton JohnsonTeleplay by : Rod Serling",
-          "production_code": "173-3628"
+          "production_code": "173-3628",
+          "localPath": "/videos/twilight-zone/S01_E26_Exécution.mp4"
         },
         {
           "season_number": 1,
@@ -442,7 +468,8 @@
           "cast": [],
           "director": "Ronald Winston",
           "writer": "Rod Serling",
-          "production_code": "173-3630"
+          "production_code": "173-3630",
+          "localPath": "/videos/twilight-zone/S01_E27_Le Vœu magique.mp4"
         },
         {
           "season_number": 1,
@@ -458,7 +485,8 @@
           "cast": [],
           "director": "John Brahm",
           "writer": "Charles Beaumont",
-          "production_code": "173-3632"
+          "production_code": "173-3632",
+          "localPath": "/videos/twilight-zone/S01_E28_Enfer ou Paradis.mp4"
         },
         {
           "season_number": 1,
@@ -474,7 +502,8 @@
           "cast": [],
           "director": "Alvin Ganzer",
           "writer": "Rod Serling",
-          "production_code": "173-3635"
+          "production_code": "173-3635",
+          "localPath": "/videos/twilight-zone/S01_E29_Cauchemar.mp4"
         },
         {
           "season_number": 1,
@@ -490,7 +519,8 @@
           "cast": [],
           "director": "Robert Parrish",
           "writer": "Rod Serling",
-          "production_code": "173-3629"
+          "production_code": "173-3629",
+          "localPath": "/videos/twilight-zone/S01_E30_Arrêt à Willoughby.mp4"
         },
         {
           "season_number": 1,
@@ -506,7 +536,8 @@
           "cast": [],
           "director": "Douglas Heyes",
           "writer": "Based on a short story by : John CollierTeleplay by : Robert Presnell, Jr.",
-          "production_code": "173-3636"
+          "production_code": "173-3636",
+          "localPath": "/videos/twilight-zone/S01_E31_La Potion magique.mp4"
         },
         {
           "season_number": 1,
@@ -522,7 +553,8 @@
           "cast": [],
           "director": "Don Medford",
           "writer": "Rod Serling",
-          "production_code": "173-3633"
+          "production_code": "173-3633",
+          "localPath": "/videos/twilight-zone/S01_E32_Coup de trompette.mp4"
         },
         {
           "season_number": 1,
@@ -538,7 +570,8 @@
           "cast": [],
           "director": "William Asher",
           "writer": "Rod Serling",
-          "production_code": "173-3631"
+          "production_code": "173-3631",
+          "localPath": "/videos/twilight-zone/S01_E33_Un original.mp4"
         },
         {
           "season_number": 1,
@@ -554,7 +587,8 @@
           "cast": [],
           "director": "Douglas Heyes",
           "writer": "Rod Serling",
-          "production_code": "173-3637"
+          "production_code": "173-3637",
+          "localPath": "/videos/twilight-zone/S01_E34_Neuvième Étage.mp4"
         },
         {
           "season_number": 1,
@@ -570,7 +604,8 @@
           "cast": [],
           "director": "Alvin GanzerRobert Parrish",
           "writer": "Rod Serling",
-          "production_code": "173-3617"
+          "production_code": "173-3617",
+          "localPath": "/videos/twilight-zone/S01_E35_Le Champion.mp4"
         },
         {
           "season_number": 1,
@@ -586,7 +621,8 @@
           "cast": [],
           "director": "Ralph Nelson",
           "writer": "Richard Matheson",
-          "production_code": "173-3634"
+          "production_code": "173-3634",
+          "localPath": "/videos/twilight-zone/S01_E36_Un monde à soi.mp4"
         }
       ],
       "total_episodes": 36

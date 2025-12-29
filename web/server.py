@@ -86,6 +86,8 @@ class TwilightZoneHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         '.mp4': 'video/mp4',
         '.webm': 'video/webm',
         '.ogg': 'video/ogg',
+        '.avi': 'video/x-msvideo',
+        '.mkv': 'video/x-matroska',
         '': 'application/octet-stream',
     }
 
