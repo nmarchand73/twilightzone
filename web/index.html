@@ -17,6 +17,10 @@
                 <span class="tab-icon">🌌</span>
                 <span class="tab-text">The Twilight Zone</span>
             </button>
+            <button class="tab-button" data-series="x-files" role="tab" aria-selected="false" aria-controls="x-files-panel">
+                <span class="tab-icon">🛸</span>
+                <span class="tab-text">The X-Files</span>
+            </button>
             <button class="tab-button" data-series="thunderbirds" role="tab" aria-selected="false" aria-controls="thunderbirds-panel">
                 <span class="tab-icon">✈️</span>
                 <span class="tab-text">Les Sentinelles de l'Air</span>
@@ -259,6 +263,94 @@
             <!-- Footer -->
             <footer class="footer">
                 <p>Créé par Brian Clemens | The New Avengers - 1976-1977</p>
+            </footer>
+        </div>
+
+        <!-- X-Files Panel -->
+        <div id="x-files-panel" class="series-panel" role="tabpanel">
+            <header class="header">
+                <div class="header-content">
+                    <h1 class="title">The X-Files</h1>
+                    <p class="subtitle">Aux frontières du réel - 1993-2018</p>
+                    <div class="series-info">
+                        <span class="info-badge" id="xFilesSeasons">11 Seasons</span>
+                        <span class="info-badge" id="xFilesEpisodes">217 Episodes</span>
+                        <a href="https://ew.com/tv/best-x-files-episodes/" class="info-badge info-badge-ew" target="_blank" rel="noopener" title="Entertainment Weekly's 25 best episodes">EW Top 25</a>
+                        <a href="https://www.vulture.com/article/every-episode-of-the-x-files-ranked.html" class="info-badge info-badge-vulture" target="_blank" rel="noopener" title="Vulture's full ranking of all episodes">Vulture</a>
+                    </div>
+                </div>
+            </header>
+
+            <div class="controls">
+                <div class="search-container">
+                    <input
+                        type="text"
+                        id="xFilesSearchInput"
+                        class="search-input"
+                        placeholder="Search episodes by title, plot, director, or writer..."
+                        aria-label="Search X-Files episodes"
+                    >
+                </div>
+
+                <div class="filter-container">
+                    <label for="xFilesSeasonFilter" class="filter-label">Season:</label>
+                    <select id="xFilesSeasonFilter" class="season-select">
+                        <option value="all">All Seasons</option>
+                        <option value="1">Season 1</option>
+                        <option value="2">Season 2</option>
+                        <option value="3">Season 3</option>
+                        <option value="4">Season 4</option>
+                        <option value="5">Season 5</option>
+                        <option value="6">Season 6</option>
+                        <option value="7">Season 7</option>
+                        <option value="8">Season 8</option>
+                        <option value="9">Season 9</option>
+                        <option value="10">Season 10</option>
+                        <option value="11">Season 11</option>
+                    </select>
+
+                    <label for="xFilesDirectorFilter" class="filter-label">Director:</label>
+                    <select id="xFilesDirectorFilter" class="season-select">
+                        <option value="all">All Directors</option>
+                    </select>
+
+                    <label for="xFilesWriterFilter" class="filter-label">Writer:</label>
+                    <select id="xFilesWriterFilter" class="season-select">
+                        <option value="all">All Writers</option>
+                    </select>
+
+                    <label for="xFilesSortBy" class="filter-label">Sort by:</label>
+                    <select id="xFilesSortBy" class="season-select">
+                        <option value="episode">Episode order</option>
+                        <option value="composite_rank">Composite rank</option>
+                        <option value="ew_rank">EW rank</option>
+                        <option value="vulture_rank">Vulture rank</option>
+                    </select>
+
+                    <button id="xFilesSortToggle" class="sort-button" aria-label="Toggle sort order">
+                        Sort: Oldest First
+                    </button>
+                </div>
+            </div>
+
+            <div class="stats-bar">
+                <span id="xFilesDisplayCount">Displaying 217 episodes</span>
+            </div>
+
+            <main class="episodes-grid" id="xFilesEpisodesGrid" role="main">
+            </main>
+
+            <div class="loading hidden" id="xFilesLoading">
+                <div class="loading-spinner"></div>
+                <p>Loading The X-Files episodes...</p>
+            </div>
+
+            <div class="no-results hidden" id="xFilesNoResults">
+                <p>No episodes found matching your search.</p>
+            </div>
+
+            <footer class="footer">
+                <p>Created by Chris Carter | The X-Files - 1993-2018 | Data from Wikipedia</p>
             </footer>
         </div>
     </div>

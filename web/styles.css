@@ -31,6 +31,11 @@
     --color-accent-dim-blue: #5ba3d4;
     --color-rgba-blue: rgba(91, 163, 212, 1);
     
+    /* Green theme (X-Files) */
+    --color-accent-green: #7cfc00;
+    --color-accent-dim-green: #2e8b57;
+    --color-rgba-green: rgba(46, 139, 87, 1);
+    
     /* RGBA variables for dynamic theme switching (default: yellow) */
     --color-rgba-accent: rgba(212, 175, 55, 1);
     --color-rgba-accent-alpha-1: rgba(212, 175, 55, 0.1);
@@ -141,6 +146,68 @@ body.thunderbirds-theme .header::after {
 body.thunderbirds-theme .tab-button.active {
     border-bottom-color: #5ba3d4 !important;
     color: #b0e0e6 !important;
+}
+
+/* X-Files theme - Green/paranormal colors */
+body.x-files-theme {
+    --color-accent: var(--color-accent-green);
+    --color-accent-dim: var(--color-accent-dim-green);
+    --color-rgba-accent: rgba(46, 139, 87, 1);
+    --color-rgba-accent-alpha-1: rgba(46, 139, 87, 0.1);
+    --color-rgba-accent-alpha-2: rgba(46, 139, 87, 0.2);
+    --color-rgba-accent-alpha-3: rgba(46, 139, 87, 0.3);
+    --color-rgba-accent-alpha-4: rgba(46, 139, 87, 0.4);
+    --color-rgba-accent-alpha-5: rgba(46, 139, 87, 0.5);
+    --color-rgba-accent-alpha-6: rgba(46, 139, 87, 0.6);
+    --color-rgba-accent-alpha-7: rgba(46, 139, 87, 0.7);
+    --color-rgba-accent-alpha-8: rgba(46, 139, 87, 0.8);
+    --color-rgba-accent-alpha-9: rgba(46, 139, 87, 0.9);
+}
+
+body.x-files-theme .title {
+    background: linear-gradient(
+        90deg,
+        #2e8b57 0%,
+        #7cfc00 20%,
+        #3cb371 40%,
+        #7cfc00 60%,
+        #2e8b57 80%,
+        #7cfc00 100%
+    ) !important;
+    background-size: 200% auto !important;
+    background-clip: text !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    animation: holographicShift 5s linear infinite !important;
+    filter: drop-shadow(0 0 20px rgba(124, 252, 0, 0.6))
+            drop-shadow(0 0 40px rgba(46, 139, 87, 0.4)) !important;
+    color: #7cfc00 !important;
+}
+
+body.x-files-theme .episode-card::before,
+body.x-files-theme .episode-card::after,
+body.x-files-theme .episode-badge-overall,
+body.x-files-theme .watch-button {
+    box-shadow: 0 0 20px rgba(46, 139, 87, 0.3),
+                0 0 40px rgba(46, 139, 87, 0.2) !important;
+}
+
+body.x-files-theme .episode-badge-overall {
+    background: linear-gradient(135deg, #2e8b57 0%, rgba(46, 139, 87, 0.7) 100%) !important;
+    border: 1px solid rgba(46, 139, 87, 0.5) !important;
+}
+
+body.x-files-theme .episode-card:hover {
+    border-color: rgba(46, 139, 87, 0.5) !important;
+}
+
+body.x-files-theme .stats-bar {
+    border-left-color: #2e8b57 !important;
+}
+
+body.x-files-theme .tab-button.active {
+    border-bottom-color: #2e8b57 !important;
+    color: #7cfc00 !important;
 }
 
 /* Replace effect tint yellow with blue */
@@ -534,6 +601,43 @@ body::after {
     font-size: 0.9rem;
     color: var(--color-accent-dim);
     font-weight: 500;
+}
+
+a.info-badge {
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+a.info-badge:hover {
+    border-color: var(--color-accent-dim);
+    color: var(--color-accent);
+}
+
+a.info-badge-ew {
+    background: linear-gradient(135deg, rgba(212, 165, 32, 0.2) 0%, rgba(212, 165, 32, 0.1) 100%);
+    border-color: rgba(212, 165, 32, 0.5);
+    color: #d4a520;
+}
+
+a.info-badge-ew:hover {
+    background: linear-gradient(135deg, rgba(212, 165, 32, 0.35) 0%, rgba(212, 165, 32, 0.2) 100%);
+    color: #e6b82e;
+}
+
+body.x-files-theme a.info-badge-ew {
+    border-color: rgba(212, 165, 32, 0.6);
+    box-shadow: 0 0 12px rgba(212, 165, 32, 0.2);
+}
+
+a.info-badge-vulture {
+    background: linear-gradient(135deg, rgba(100, 116, 139, 0.25) 0%, rgba(100, 116, 139, 0.15) 100%);
+    border-color: rgba(100, 116, 139, 0.5);
+    color: #94a3b8;
+}
+
+a.info-badge-vulture:hover {
+    background: linear-gradient(135deg, rgba(100, 116, 139, 0.4) 0%, rgba(100, 116, 139, 0.25) 100%);
+    color: #cbd5e1;
 }
 
 /* ================================
@@ -945,6 +1049,50 @@ body::after {
 
 .episode-badge-season {
     opacity: 0.9;
+}
+
+/* EW Top 25 best episodes badge - gold accent for "best of" prominence */
+.episode-badge-ew {
+    background: linear-gradient(135deg, #d4a520 0%, rgba(212, 165, 32, 0.8) 100%) !important;
+    color: #0a0a0a !important;
+    font-weight: 700;
+    box-shadow: 0 2px 6px rgba(212, 165, 32, 0.4);
+    border: 1px solid rgba(255, 215, 0, 0.5);
+}
+
+body.x-files-theme .episode-badge-ew {
+    background: linear-gradient(135deg, #d4a520 0%, rgba(212, 165, 32, 0.85) 100%) !important;
+    color: #0a0a0a !important;
+    box-shadow: 0 0 12px rgba(212, 165, 32, 0.4),
+                0 2px 6px rgba(212, 165, 32, 0.3);
+}
+
+/* Vulture full ranking badge - slate/silver to distinguish from EW gold */
+.episode-badge-vulture {
+    background: linear-gradient(135deg, #64748b 0%, rgba(100, 116, 139, 0.85) 100%) !important;
+    color: #f8fafc !important;
+    font-weight: 600;
+    box-shadow: 0 2px 6px rgba(100, 116, 139, 0.35);
+    border: 1px solid rgba(148, 163, 184, 0.5);
+}
+
+body.x-files-theme .episode-badge-vulture {
+    box-shadow: 0 0 10px rgba(100, 116, 139, 0.35),
+                0 2px 6px rgba(100, 116, 139, 0.25);
+}
+
+/* Composite (mean of EW + Vulture) ranking badge */
+.episode-badge-composite {
+    background: linear-gradient(135deg, #0d9488 0%, rgba(13, 148, 136, 0.85) 100%) !important;
+    color: #f0fdfa !important;
+    font-weight: 700;
+    box-shadow: 0 2px 6px rgba(13, 148, 136, 0.4);
+    border: 1px solid rgba(45, 212, 191, 0.5);
+}
+
+body.x-files-theme .episode-badge-composite {
+    box-shadow: 0 0 12px rgba(13, 148, 136, 0.4),
+                0 2px 6px rgba(13, 148, 136, 0.3);
 }
 
 .episode-title {

@@ -33,6 +33,14 @@ class TwilightZoneApp {
         this.newAvengersCurrentWriter = 'all';
         this.newAvengersSearchTerm = '';
         this.newAvengersSortAscending = true;
+        this.xFilesEpisodes = []; // The X-Files episodes data
+        this.xFilesFiltered = []; // Filtered X-Files episodes
+        this.xFilesCurrentSeason = 'all';
+        this.xFilesCurrentDirector = 'all';
+        this.xFilesCurrentWriter = 'all';
+        this.xFilesSearchTerm = '';
+        this.xFilesSortAscending = true;
+        this.xFilesSortBy = 'episode'; // 'episode' | 'composite_rank' | 'ew_rank' | 'vulture_rank'
 
         // Table de correspondance entre épisodes et noms de fichiers vidéo réels
         this.videoFileMap = {
@@ -900,7 +908,8 @@ class TwilightZoneApp {
             await Promise.all([
                 this.loadData(),
                 this.loadThunderbirdsData(),
-                this.loadNewAvengersData()
+                this.loadNewAvengersData(),
+                this.loadXFilesData()
             ]);
             this.setupEventListeners();
             this.setupTabNavigation();
@@ -988,6 +997,48 @@ class TwilightZoneApp {
         }
     }
 
+    async loadXFilesData() {
+        try {
+            const response = await fetch('/data/x_files_episodes.json');
+            if (!response.ok) {
+                throw new Error(`Failed to load X-Files data: ${response.statusText}`);
+            }
+            const data = await response.json();
+            
+            // Flatten episodes from all seasons
+            this.xFilesEpisodes = [];
+            if (data.seasons) {
+                data.seasons.forEach(season => {
+                    this.xFilesEpisodes.push(...season.episodes);
+                });
+            }
+            
+            // Clean up titles (remove mythology marker ‡ if present)
+            this.xFilesEpisodes.forEach(ep => {
+                if (ep.title_original && typeof ep.title_original === 'string') {
+                    ep.title_original = ep.title_original.replace(/["‡]+$/g, '').trim();
+                }
+            });
+            
+            // Update header info
+            const seasonsBadge = document.getElementById('xFilesSeasons');
+            const episodesBadge = document.getElementById('xFilesEpisodes');
+            if (seasonsBadge) seasonsBadge.textContent = `${data.total_seasons || 11} Seasons`;
+            if (episodesBadge) episodesBadge.textContent = `${data.total_episodes || 217} Episodes`;
+            
+            this.xFilesFiltered = [...this.xFilesEpisodes];
+            
+            this.populateXFilesFilters();
+            this.applyXFilesFilters();
+            
+            console.log(`Loaded ${this.xFilesEpisodes.length} X-Files episodes from JSON`);
+        } catch (error) {
+            console.error('Error loading X-Files data:', error);
+            this.xFilesEpisodes = [];
+            this.xFilesFiltered = [];
+        }
+    }
+
     getThunderbirdsFrenchTitle(episodeNum) {
         // Titres français des épisodes Thunderbirds selon l'ordre officiel
         const frenchTitles = {
@@ -1068,6 +1119,9 @@ class TwilightZoneApp {
         } else if (series === 'new-avengers') {
             document.getElementById('new-avengers-panel').classList.add('active');
             this.applyNewAvengersFilters();
+        } else if (series === 'x-files') {
+            document.getElementById('x-files-panel').classList.add('active');
+            this.applyXFilesFilters();
         }
     }
 
@@ -1075,13 +1129,15 @@ class TwilightZoneApp {
         const body = document.body;
         
         // Retirer tous les thèmes
-        body.classList.remove('twilight-zone-theme', 'thunderbirds-theme', 'new-avengers-theme');
+        body.classList.remove('twilight-zone-theme', 'thunderbirds-theme', 'new-avengers-theme', 'x-files-theme');
         
         // Appliquer le thème approprié
         if (series === 'thunderbirds') {
             body.classList.add('thunderbirds-theme');
         } else if (series === 'new-avengers') {
             body.classList.add('new-avengers-theme');
+        } else if (series === 'x-files') {
+            body.classList.add('x-files-theme');
         } else {
             body.classList.add('twilight-zone-theme');
         }
@@ -1529,6 +1585,73 @@ class TwilightZoneApp {
                 this.applyNewAvengersFilters();
             });
         }
+
+        // X-Files search input
+        const xFilesSearchInput = document.getElementById('xFilesSearchInput');
+        if (xFilesSearchInput) {
+            xFilesSearchInput.addEventListener('input', (e) => {
+                this.xFilesSearchTerm = e.target.value.toLowerCase();
+                this.applyXFilesFilters();
+            });
+        }
+
+        // X-Files season filter
+        const xFilesSeasonFilter = document.getElementById('xFilesSeasonFilter');
+        if (xFilesSeasonFilter) {
+            xFilesSeasonFilter.addEventListener('change', (e) => {
+                this.xFilesCurrentSeason = e.target.value;
+                this.applyXFilesFilters();
+            });
+        }
+
+        // X-Files director filter
+        const xFilesDirectorFilter = document.getElementById('xFilesDirectorFilter');
+        if (xFilesDirectorFilter) {
+            xFilesDirectorFilter.addEventListener('change', (e) => {
+                this.xFilesCurrentDirector = e.target.value;
+                this.applyXFilesFilters();
+            });
+        }
+
+        // X-Files writer filter
+        const xFilesWriterFilter = document.getElementById('xFilesWriterFilter');
+        if (xFilesWriterFilter) {
+            xFilesWriterFilter.addEventListener('change', (e) => {
+                this.xFilesCurrentWriter = e.target.value;
+                this.applyXFilesFilters();
+            });
+        }
+
+        // X-Files sort by dropdown
+        const xFilesSortBy = document.getElementById('xFilesSortBy');
+        if (xFilesSortBy) {
+            xFilesSortBy.addEventListener('change', (e) => {
+                this.xFilesSortBy = e.target.value;
+                this.updateXFilesSortButtonLabel();
+                this.applyXFilesFilters();
+            });
+        }
+
+        // X-Files sort toggle
+        const xFilesSortToggle = document.getElementById('xFilesSortToggle');
+        if (xFilesSortToggle) {
+            this.updateXFilesSortButtonLabel();
+            xFilesSortToggle.addEventListener('click', () => {
+                this.xFilesSortAscending = !this.xFilesSortAscending;
+                this.updateXFilesSortButtonLabel();
+                this.applyXFilesFilters();
+            });
+        }
+    }
+
+    updateXFilesSortButtonLabel() {
+        const btn = document.getElementById('xFilesSortToggle');
+        if (!btn) return;
+        if (this.xFilesSortBy === 'episode') {
+            btn.textContent = this.xFilesSortAscending ? 'Oldest first' : 'Newest first';
+        } else {
+            btn.textContent = this.xFilesSortAscending ? 'Best first' : 'Worst first';
+        }
     }
 
     populateThunderbirdsFilters() {
@@ -1880,6 +2003,232 @@ class TwilightZoneApp {
         `;
 
         // Add click handler for plot button
+        if (hasPlot) {
+            const expandButton = card.querySelector('.expand-button');
+            if (expandButton) {
+                expandButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.openPlotModal(episode);
+                });
+            }
+        }
+
+        const watchButton = card.querySelector('.watch-button');
+        if (watchButton) {
+            watchButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.openVideoModal(episode);
+            });
+        }
+
+        return card;
+    }
+
+    populateXFilesFilters() {
+        this.populateXFilesDirectorFilter();
+        this.populateXFilesWriterFilter();
+    }
+
+    populateXFilesDirectorFilter() {
+        const directorFilter = document.getElementById('xFilesDirectorFilter');
+        if (!directorFilter) return;
+
+        while (directorFilter.children.length > 1) {
+            directorFilter.removeChild(directorFilter.lastChild);
+        }
+
+        const directors = new Set();
+        this.xFilesEpisodes.forEach(ep => {
+            if (ep.director && ep.director.trim() && ep.director !== 'N/A') {
+                directors.add(ep.director.trim());
+            }
+        });
+
+        Array.from(directors).sort().forEach(director => {
+            const option = document.createElement('option');
+            option.value = director;
+            option.textContent = director;
+            directorFilter.appendChild(option);
+        });
+    }
+
+    populateXFilesWriterFilter() {
+        const writerFilter = document.getElementById('xFilesWriterFilter');
+        if (!writerFilter) return;
+
+        while (writerFilter.children.length > 1) {
+            writerFilter.removeChild(writerFilter.lastChild);
+        }
+
+        const writers = new Set();
+        this.xFilesEpisodes.forEach(ep => {
+            if (ep.writer && ep.writer.trim() && ep.writer !== 'N/A') {
+                writers.add(ep.writer.trim());
+            }
+        });
+
+        Array.from(writers).sort().forEach(writer => {
+            const option = document.createElement('option');
+            option.value = writer;
+            option.textContent = writer;
+            writerFilter.appendChild(option);
+        });
+    }
+
+    applyXFilesFilters() {
+        let filtered = [...this.xFilesEpisodes];
+
+        if (this.xFilesCurrentSeason !== 'all') {
+            const seasonNum = parseInt(this.xFilesCurrentSeason);
+            filtered = filtered.filter(ep => ep.season_number === seasonNum);
+        }
+
+        if (this.xFilesCurrentDirector !== 'all') {
+            filtered = filtered.filter(ep =>
+                ep.director && ep.director.trim() === this.xFilesCurrentDirector
+            );
+        }
+
+        if (this.xFilesCurrentWriter !== 'all') {
+            filtered = filtered.filter(ep =>
+                ep.writer && ep.writer.trim() === this.xFilesCurrentWriter
+            );
+        }
+
+        if (this.xFilesSearchTerm) {
+            filtered = filtered.filter(ep => {
+                const searchableText = [
+                    ep.title_original,
+                    ep.title_french,
+                    ep.summary,
+                    ep.plot,
+                    ep.director,
+                    ep.writer,
+                    ep.production_code
+                ].filter(Boolean).join(' ').toLowerCase();
+                return searchableText.includes(this.xFilesSearchTerm);
+            });
+        }
+
+        filtered.sort((a, b) => {
+            if (this.xFilesSortBy === 'composite_rank') {
+                const rankA = a.composite_rank ?? 999;
+                const rankB = b.composite_rank ?? 999;
+                const comparison = rankA - rankB || (a.episode_number_overall - b.episode_number_overall);
+                return this.xFilesSortAscending ? comparison : -comparison;
+            }
+            if (this.xFilesSortBy === 'ew_rank') {
+                const rankA = a.ew_rank ?? 999;
+                const rankB = b.ew_rank ?? 999;
+                const comparison = rankA - rankB || (a.episode_number_overall - b.episode_number_overall);
+                return this.xFilesSortAscending ? comparison : -comparison;
+            }
+            if (this.xFilesSortBy === 'vulture_rank') {
+                const rankA = a.vulture_rank ?? 999;
+                const rankB = b.vulture_rank ?? 999;
+                const comparison = rankA - rankB || (a.episode_number_overall - b.episode_number_overall);
+                return this.xFilesSortAscending ? comparison : -comparison;
+            }
+            const comparison = a.episode_number_overall - b.episode_number_overall;
+            return this.xFilesSortAscending ? comparison : -comparison;
+        });
+
+        this.xFilesFiltered = filtered;
+        this.renderXFilesEpisodes();
+    }
+
+    renderXFilesEpisodes() {
+        const grid = document.getElementById('xFilesEpisodesGrid');
+        const loading = document.getElementById('xFilesLoading');
+        const noResults = document.getElementById('xFilesNoResults');
+        const displayCount = document.getElementById('xFilesDisplayCount');
+
+        if (!grid) return;
+
+        grid.innerHTML = '';
+        loading.classList.add('hidden');
+
+        displayCount.textContent = `Displaying ${this.xFilesFiltered.length} episode${this.xFilesFiltered.length !== 1 ? 's' : ''}`;
+
+        if (this.xFilesFiltered.length === 0) {
+            noResults.classList.remove('hidden');
+            return;
+        }
+        noResults.classList.add('hidden');
+
+        this.xFilesFiltered.forEach(episode => {
+            const card = this.createXFilesEpisodeCard(episode);
+            grid.appendChild(card);
+        });
+    }
+
+    createXFilesEpisodeCard(episode) {
+        const card = document.createElement('article');
+        card.className = 'episode-card';
+        card.setAttribute('role', 'article');
+        card.setAttribute('aria-label', `Episode ${episode.episode_number_overall}: ${episode.title_original}`);
+
+        this.applyRandomEffects(card, episode);
+
+        card._episodeData = episode;
+        card._shaderData = null;
+
+        if (this.intersectionObserver) {
+            this.intersectionObserver.observe(card);
+        }
+
+        const badgeText = `S${episode.season_number}E${episode.episode_number}`;
+        const hasPlot = episode.plot && episode.plot.trim().length > 0;
+        const title = (episode.title_original || '').replace(/["‡]+$/g, '').trim();
+        const ewRank = episode.ew_rank;
+        const vultureRank = episode.vulture_rank;
+        const compositeRank = episode.composite_rank;
+
+        card.innerHTML = `
+            <div class="episode-header">
+                <div class="episode-meta">
+                    <span class="episode-badge episode-badge-season">${badgeText}</span>
+                    <span class="episode-badge episode-badge-overall">#${episode.episode_number_overall}</span>
+                    ${compositeRank ? `<span class="episode-badge episode-badge-composite" title="${episode.composite_rank_source || 'Mean of normalized EW + Vulture rankings'}">#${compositeRank}</span>` : ''}
+                    ${ewRank ? `<span class="episode-badge episode-badge-ew" title="EW Top 25: #${ewRank} of 25 (${episode.ew_rank_source || 'https://ew.com/tv/best-x-files-episodes/'})">EW #${ewRank}</span>` : ''}
+                    ${vultureRank ? `<span class="episode-badge episode-badge-vulture" title="Vulture ranking: #${vultureRank} of 182 (1=best) · ${episode.vulture_rank_source || 'https://www.vulture.com/article/every-episode-of-the-x-files-ranked.html'}">Vulture #${vultureRank}</span>` : ''}
+                </div>
+                <h2 class="episode-title">${this.escapeHtml(title)}</h2>
+                ${episode.title_french && episode.title_french !== title ? `<p class="episode-title-french">${this.escapeHtml(episode.title_french)}</p>` : ''}
+                ${episode.air_date_usa ? `<p class="episode-date">Aired: ${this.escapeHtml(episode.air_date_usa)}</p>` : ''}
+            </div>
+
+            ${episode.summary ? `<p class="episode-summary">${this.escapeHtml(episode.summary)}</p>` : ''}
+
+            <div class="episode-details">
+                ${episode.director && episode.director !== 'N/A' ? `
+                    <div class="detail-row">
+                        <span class="detail-label">Director:</span>
+                        <span class="detail-value">${this.escapeHtml(episode.director)}</span>
+                    </div>
+                ` : ''}
+                ${episode.writer && episode.writer !== 'N/A' ? `
+                    <div class="detail-row">
+                        <span class="detail-label">Writer:</span>
+                        <span class="detail-value">${this.escapeHtml(episode.writer)}</span>
+                    </div>
+                ` : ''}
+                ${episode.production_code ? `
+                    <div class="detail-row">
+                        <span class="detail-label">Production:</span>
+                        <span class="detail-value">${this.escapeHtml(episode.production_code)}</span>
+                    </div>
+                ` : ''}
+            </div>
+
+            <div class="episode-actions">
+                ${hasPlot ? `
+                    <button class="expand-button" aria-expanded="false">Read Full Plot</button>
+                ` : ''}
+                <button class="watch-button" aria-label="Watch episode">▶ Watch Episode</button>
+            </div>
+        `;
+
         if (hasPlot) {
             const expandButton = card.querySelector('.expand-button');
             if (expandButton) {
