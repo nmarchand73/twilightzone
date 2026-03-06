@@ -35,6 +35,7 @@ env/
 # Output
 output/
 *.json
+!web/data/*.json
 *.log
 
 # Videos (too large for git)
